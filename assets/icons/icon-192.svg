@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="192" height="192">
+  <defs>
+    <radialGradient id="sealGrad" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#C8483A"/>
+      <stop offset="100%" stop-color="#9A2A1E"/>
+    </radialGradient>
+    <filter id="sealShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#55150E" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- 印泥背景 -->
+  <rect x="16" y="16" width="160" height="160" rx="24" fill="url(#sealGrad)" filter="url(#sealShadow)"/>
+
+  <!-- 泥金双边框 -->
+  <rect x="26" y="26" width="140" height="140" rx="18" fill="none" stroke="#F5D998" stroke-width="3" opacity="0.85"/>
+  <rect x="32" y="32" width="128" height="128" rx="14" fill="none" stroke="#F5D998" stroke-width="1.2" opacity="0.5"/>
+
+  <!-- 印文：周庸 (白文篆刻风格) -->
+  <g fill="#FFF9ED" font-family="'Kaiti SC', 'STKaiti', 'KaiTi', 'Noto Serif SC', serif" font-weight="bold">
+    <text x="96" y="85" font-size="52" text-anchor="middle" dominant-baseline="central" letter-spacing="4">周</text>
+    <text x="96" y="132" font-size="44" text-anchor="middle" dominant-baseline="central" letter-spacing="4">庸</text>
+  </g>
+</svg>

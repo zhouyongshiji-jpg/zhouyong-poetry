@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>《周庸诗集》- 数字诗馆与电子诗卷</title>
+  
+  <!-- 基础元数据与适老/移动端优化 -->
+  <meta name="description" content="周庸先生诗词集粹，汇聚七旬心血，收录客海萍踪、故园情愫、四时清赏、酬唱知交等数百首古今体诗词。支持大字号适老阅读、横竖排版切换与微信美图分享。">
+  <meta name="theme-color" content="#F8F5EC">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="周庸诗集">
+
+  <!-- PWA 配置文件 -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.svg">
+
+  <!-- 样式表 -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/book.css">
+</head>
+<body class="font-standard">
+
+  <div class="app-container">
+    <!-- 顶部古典典雅导航栏 -->
+    <header class="site-header">
+      <div class="header-inner">
+        <!-- 诗集印章标与题名 -->
+        <a class="brand" href="#" title="返回卷首">
+          <div class="brand-seal-icon">周</div>
+          <div class="brand-text">
+            <h1>周庸诗集</h1>
+            <div class="sub-title">周庸先生数字诗馆 · 亲友雅玩</div>
+          </div>
+        </a>
+
+        <!-- 检索框 (即打即搜 / 支持拼音缩写) -->
+        <div class="search-box-wrap">
+          <input type="text" id="searchInput" class="search-input" 
+                 placeholder="按诗题、字句、年代或拼音搜索..." 
+                 autocomplete="off" aria-label="搜索诗词">
+          <button id="searchClearBtn" class="search-clear-btn" aria-label="清除搜索">✕</button>
+          <div id="searchResultsContainer" class="search-results-container"></div>
+        </div>
+
+        <!-- 顶栏操作功能组 -->
+        <div class="header-actions">
+          <!-- 适老专属三档字号开关 (70+ 长者核心优化) -->
+          <div class="senior-toolbar" title="调节阅读字号">
+            <button id="btnFontStandard" class="senior-btn active" data-size="standard">标准</button>
+            <button id="btnFontLarge" class="senior-btn" data-size="large">大字</button>
+            <button id="btnFontXLarge" class="senior-btn" data-size="xlarge">特大</button>
+          </div>
+
+          <!-- 竖排/横排一键切换 -->
+          <button id="btnToggleLayout" class="btn-action-pill" title="古籍竖排与现代横排切换">
+            <span class="icon">📜</span><span>改竖排</span>
+          </button>
+
+          <!-- 墨玉夜读/宣纸日读切换 -->
+          <button id="btnToggleTheme" class="btn-icon" title="切换夜读模式" aria-label="切换夜读模式">
+            🌙
+          </button>
+
+          <!-- 移动端打开目录按钮 -->
+          <button id="btnToggleToc" class="btn-icon mobile-only" title="打开卷目目录" aria-label="目录">
+            📑
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 移动端侧栏遮罩层 -->
+    <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
+    <!-- 主体布局 -->
+    <main class="main-layout">
+      <!-- 卷次目录抽屉 -->
+      <aside id="sidebarToc" class="sidebar-toc">
+        <div class="toc-header">
+          <div class="toc-title">诗集卷目</div>
+          <button id="btnCloseToc" class="btn-icon mobile-only" style="width: 32px; height: 32px; font-size: 14px;" aria-label="关闭目录">✕</button>
+        </div>
+        <div id="volumesNavList">
+          <!-- 由 app.js 动态渲染卷目与诗名 -->
+        </div>
+      </aside>
+
+      <!-- 核心阅读主舞台 -->
+      <section class="reader-stage">
+        <!-- 阅读器快捷操作栏 -->
+        <div class="reader-controls-bar">
+          <div class="nav-buttons">
+            <button id="btnPrevPoem" class="btn-nav-page" title="快捷键：键盘左箭头 [←]">
+              <span>❮</span> <span>上一首</span>
+            </button>
+            <span id="pageIndicator" style="font-size: 14px; color: var(--text-muted); font-family: var(--font-serif);">
+              1 / 1
+            </span>
+            <button id="btnNextPoem" class="btn-nav-page" title="快捷键：键盘右箭头 [→]">
+              <span>下一首</span> <span>❯</span>
+            </button>
+          </div>
+
+          <div class="action-buttons">
+            <!-- 听诗（Web Speech API 智能朗读） -->
+            <button id="btnTTS" class="btn-action-pill btn-tts" title="智能从容朗诵诗篇（视力疲劳时可闭目聆听）">
+              <span>🎙️</span><span>听诗</span>
+            </button>
+
+            <!-- 朋友圈/LINE 美图卡片导出 -->
+            <button id="btnShareCard" class="btn-action-pill btn-share" title="生成宣纸雅韵诗卡，方便微信朋友圈与好友分享">
+              <span>🧧</span><span>生成雅卡</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 诗页渲染主容器 (通过 CSS 控制 mode-horizontal 与 mode-vertical) -->
+        <article id="poemPageContainer" class="poem-page-container mode-horizontal">
+          <!-- 由 app.js 动态填充 -->
+        </article>
+      </section>
+    </main>
+
+    <!-- 底部文人题记与版权 -->
+    <footer class="site-footer">
+      <p style="letter-spacing: 2px; font-weight: bold; margin-bottom: 4px;">《周庸诗集》数字诗馆</p>
+      <p>笔耕不辍七十载 · 寄怀神州与南洋 · 亲友门生雅玩珍藏</p>
+      <p style="font-size: 12px; margin-top: 8px; opacity: 0.8;">
+        💡 提示：在手机浏览器中点击底部“分享/菜单”选择“添加到主屏幕”，即可离线随手翻阅。
+      </p>
+    </footer>
+
+    <!-- 移动端适老化底部快捷工具条 -->
+    <nav class="mobile-senior-bar">
+      <button class="senior-btn" onclick="document.getElementById('btnToggleToc').click()">
+        <span>📑</span><span>目录</span>
+      </button>
+      <button class="senior-btn" onclick="document.getElementById('btnTTS').click()">
+        <span>🎙️</span><span>听诗</span>
+      </button>
+      <button class="senior-btn" onclick="document.getElementById('btnShareCard').click()">
+        <span>🧧</span><span>诗卡</span>
+      </button>
+      <button class="senior-btn" onclick="document.getElementById('btnToggleLayout').click()">
+        <span>📜</span><span>横竖</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- 朋友圈/LINE 雅韵诗卡导出弹窗 -->
+  <div id="cardModal" class="modal-backdrop">
+    <div class="modal-card-dialog">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>🧧</span> <span>微信 / LINE 诗词雅卡生成</span>
+        </div>
+        <button id="btnCloseCardModal" class="modal-close-btn" aria-label="关闭">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="card-options-toolbar">
+          <button class="card-opt-btn active" data-ratio="3:4">3:4 朋友圈最佳比例</button>
+          <button class="card-opt-btn" data-ratio="square">1:1 方形</button>
+          <button class="card-opt-btn" data-ratio="scroll">长卷轴</button>
+        </div>
+
+        <div class="card-preview-area">
+          <img id="cardPreviewImg" class="card-preview-img" alt="诗词分享卡预览">
+        </div>
+
+        <p class="card-hint">
+          📱 手机端长按上方图片可直接【发送给朋友】或【保存到相册】发朋友圈/LINE。
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <button id="btnDownloadCard" class="btn-download-card">
+          <span>💾</span> <span>保存高清大图</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 脚本引入 (按依赖严格排序) -->
+  <script src="js/seal.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/card-exporter.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
