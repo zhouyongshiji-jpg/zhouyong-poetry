@@ -1,0 +1,4 @@
+# 敏感信息归档与本地备份（禁止上传到公开 Git 仓库）
+CREDENTIALS_BACKUP.md
+*credential*
+.system_generated/
