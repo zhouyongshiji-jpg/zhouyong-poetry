@@ -130,6 +130,13 @@
 .mode-horizontal .poem-line {
   margin: 6px 0;
   transition: color 0.2s ease;
+  word-break: keep-all;
+}
+
+/* 半句诗对仗排版单元（确保在手机小屏或大字号时仅在逗号/句点处对仗折行，杜绝半句字断裂） */
+.hemistich {
+  display: inline-block;
+  white-space: nowrap;
 }
 
 /* 注释部分 */
@@ -554,4 +561,55 @@ body.font-xlarge .mode-vertical .poem-page-content {
 
 .btn-download-card:hover {
   background: var(--vermilion-soft);
+}
+
+/* ==========================================================================
+   移动端专属古雅诗篇排版规则 (针对小屏手机优化留白与对仗折行)
+   ========================================================================== */
+@media (max-width: 600px) {
+  .poem-page-border {
+    padding: 24px 12px;
+  }
+
+  .poem-page-border::before { top: 12px; left: 14px; right: 14px; }
+  .poem-page-border::after { bottom: 12px; left: 14px; right: 14px; }
+
+  .mode-horizontal .poem-meta-header {
+    margin-bottom: 16px;
+  }
+
+  .mode-horizontal .poem-title {
+    font-size: calc(var(--font-size-title) * 0.78);
+    letter-spacing: 2px;
+    line-height: 1.35;
+  }
+
+  .mode-horizontal .poem-preface {
+    padding: 10px 14px;
+    font-size: calc(var(--font-size-base) * 0.82);
+    margin-bottom: 22px;
+    line-height: 1.85;
+  }
+
+  .mode-horizontal .poem-body {
+    font-size: calc(var(--font-size-poem) * 0.85);
+    line-height: 2.1;
+    letter-spacing: 1.5px;
+    margin-bottom: 24px;
+  }
+
+  .mode-horizontal .poem-line {
+    margin: 10px 0;
+  }
+
+  .hemistich {
+    margin: 2px 4px;
+  }
+
+  /* 竖排模式在手机上的高度与间距微调 */
+  .mode-vertical .poem-page-border {
+    padding: 24px 14px;
+    min-height: 480px;
+    height: 500px;
+  }
 }

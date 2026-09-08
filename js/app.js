@@ -249,10 +249,22 @@
       ? window.SealGenerator.createSealSVG({ text: "周庸之印", size: 68, style: "yin" })
       : "";
 
-    // 组装诗句
-    const stanzasHtml = poem.content.map(line => `
-      <div class="poem-line">${line}</div>
-    `).join("");
+    // 组装诗句（支持智能半句对仗切分，杜绝移动端中途断字）
+    const stanzasHtml = poem.content.map(line => {
+      if (line.includes("，") || line.includes("；")) {
+        const parts = line.split(/([，；])/);
+        let formatted = "";
+        for (let i = 0; i < parts.length; i += 2) {
+          const text = parts[i];
+          const punct = parts[i + 1] || "";
+          if (text) {
+            formatted += `<span class="hemistich">${text}${punct}</span>`;
+          }
+        }
+        return `<div class="poem-line">${formatted}</div>`;
+      }
+      return `<div class="poem-line"><span class="hemistich">${line}</span></div>`;
+    }).join("");
 
     // 组装注释
     let notesHtml = "";
@@ -358,15 +370,19 @@
 
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
     utterance.lang = "zh-CN";
-    utterance.rate = 0.82; // 适老化稍缓语速，从容雅致
-    utterance.pitch = 1.0;
-
-    // 优先匹配温和的中文语音包
+    // 优先匹配温和沉稳的中文男声（更切合周老先生文人自述风格）
     const voices = state.synth.getVoices();
-    const zhVoice = voices.find(v => v.lang.includes("zh") || v.name.includes("Chinese"));
-    if (zhVoice) {
-      utterance.voice = zhVoice;
+    const zhVoices = voices.filter(v => v.lang.includes("zh") || v.lang.includes("cmn") || v.name.includes("Chinese"));
+    const maleVoice = zhVoices.find(v => /kangkang|yunxi|yunyang|yunjian|male|男|bo|danny/i.test(v.name));
+
+    if (maleVoice) {
+      utterance.voice = maleVoice;
+    } else if (zhVoices.length > 0) {
+      utterance.voice = zhVoices[0];
     }
+
+    utterance.pitch = 0.95; // 音调微降，更显长者从容厚重
+    utterance.rate = 0.82;  // 节奏舒缓，适合七绝长歌慢吟
 
     utterance.onstart = () => {
       state.isSpeaking = true;

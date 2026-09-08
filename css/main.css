@@ -655,7 +655,7 @@ body {
 @media (max-width: 960px) {
   .main-layout {
     grid-template-columns: 1fr;
-    padding: 16px;
+    padding: 12px 10px;
   }
   
   .sidebar-toc {
@@ -693,8 +693,80 @@ body {
   .app-container {
     padding-bottom: 60px;
   }
-  
+}
+
+/* 手机端（≤ 768px）专属优雅紧凑页眉与适老排版 */
+@media (max-width: 768px) {
+  .header-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .brand {
+    order: 1;
+    flex-shrink: 0;
+    gap: 8px;
+  }
+
+  .brand-seal-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+
+  .brand-text h1 {
+    font-size: 18px !important;
+    letter-spacing: 1.5px;
+    white-space: nowrap;
+  }
+
+  .brand-text .sub-title {
+    display: none !important; /* 手机端隐藏超长副标题，杜绝单字纵向折行 */
+  }
+
+  .header-actions {
+    order: 2;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  /* 顶部隐藏横竖和目录按钮（底栏已有专属大按钮） */
+  .header-actions #btnToggleLayout,
+  .header-actions #btnToggleToc {
+    display: none !important;
+  }
+
+  .senior-toolbar {
+    padding: 2px 4px;
+  }
+
+  .senior-btn {
+    font-size: 12px;
+    padding: 3px 8px;
+    min-height: 28px;
+  }
+
+  .btn-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 15px;
+  }
+
+  /* 检索框整行铺满 */
   .search-box-wrap {
-    min-width: 160px;
+    order: 3;
+    width: 100%;
+    min-width: 100%;
+    margin-top: 2px;
+  }
+
+  .search-input {
+    padding: 6px 32px 6px 14px;
+    font-size: 14px;
+    height: 36px;
   }
 }
