@@ -249,8 +249,12 @@
       ? window.SealGenerator.createSealSVG({ text: "周庸之印", size: 68, style: "yin" })
       : "";
 
-    // 组装诗句（支持智能半句对仗切分，杜绝移动端中途断字）
+    // 组装诗句（支持分段题标与智能半句对仗切分，杜绝移动端中途断字）
     const stanzasHtml = poem.content.map(line => {
+      const trimmed = line.trim();
+      if (trimmed.startsWith("【其")) {
+        return `<div class="poem-section-header">${trimmed}</div>`;
+      }
       if (line.includes("，") || line.includes("；")) {
         const parts = line.split(/([，；])/);
         let formatted = "";

@@ -165,8 +165,18 @@ const CardExporter = (function () {
     }
 
     for (let i = 0; i < lines.length; i++) {
-      ctx.fillText(lines[i], width / 2, currentY);
-      currentY += lineHeight;
+      const lineText = lines[i];
+      if (lineText.startsWith("【其")) {
+        ctx.fillStyle = "#B83B2E";
+        ctx.font = 'bold 22px "KaiTi SC", "STKaiti", "KaiTi", serif';
+        ctx.fillText(lineText, width / 2, currentY);
+        currentY += lineHeight * 0.85;
+        ctx.fillStyle = "#1B1A18";
+        ctx.font = '500 28px "Noto Serif SC", "Songti SC", serif';
+      } else {
+        ctx.fillText(lineText, width / 2, currentY);
+        currentY += lineHeight;
+      }
     }
 
     // 7. 落款与朱砂印章

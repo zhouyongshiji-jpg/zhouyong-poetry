@@ -217,6 +217,10 @@ def parse_txt_poems(filepath, default_vol_id="vol-1"):
             clean_l = line.strip()
             # 过滤掉孤立的标题残留
             if clean_l and clean_l not in BLACKLIST_TITLES:
+                if clean_l == "一":
+                    clean_l = "【其一】"
+                elif clean_l == "二":
+                    clean_l = "【其二】"
                 current_poem["content"].append(clean_l)
 
         i += 1

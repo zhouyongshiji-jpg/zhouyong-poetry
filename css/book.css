@@ -133,6 +133,15 @@
   word-break: keep-all;
 }
 
+.mode-horizontal .poem-section-header {
+  font-family: var(--font-kaiti);
+  font-size: calc(var(--font-size-base) * 0.95);
+  font-weight: 600;
+  color: var(--vermilion);
+  margin: 18px 0 10px 0;
+  letter-spacing: 3px;
+}
+
 /* 半句诗对仗排版单元（确保在手机小屏或大字号时仅在逗号/句点处对仗折行，杜绝半句字断裂） */
 .hemistich {
   display: inline-block;
@@ -335,6 +344,18 @@ body.font-xlarge .mode-vertical .poem-page-content {
   margin: 0 10px;
   white-space: nowrap; /* 核心：诗句纵向不折行，保持完整七言/五言竖列 */
   letter-spacing: 6px;
+}
+
+.mode-vertical .poem-section-header {
+  display: inline-block;
+  vertical-align: top;
+  font-family: var(--font-kaiti);
+  font-size: calc(var(--font-size-base) * 0.95);
+  font-weight: 600;
+  color: var(--vermilion);
+  margin: 0 14px;
+  letter-spacing: 4px;
+  white-space: nowrap;
 }
 
 /* 竖排笺注 */
