@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>《周庸诗集》一键安装</title>
+  <style>
+    :root {
+      --bg-color: #F8F5EC;
+      --paper-card: #FCFAF2;
+      --vermilion: #B83B2E;
+      --vermilion-hover: #9E2F23;
+      --vermilion-light: #FBEBE8;
+      --text-main: #2C2825;
+      --text-sub: #6E685E;
+      --border-color: #D9D2C3;
+      --border-gold: #C5A059;
+      --shadow: 0 8px 30px rgba(70, 50, 30, 0.08);
+      --font-family: 'Kaiti SC', 'STKaiti', 'KaiTi', 'SimSun', 'Songti SC', 'Noto Serif SC', serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      background-image: radial-gradient(#E8E2D2 1px, transparent 1px);
+      background-size: 24px 24px;
+      color: var(--text-main);
+      font-family: var(--font-family);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 14px;
+    }
+
+    .install-card {
+      background: var(--paper-card);
+      border: 2px solid var(--border-color);
+      box-shadow: var(--shadow);
+      border-radius: 16px;
+      max-width: 490px;
+      width: 100%;
+      padding: 42px 24px 38px;
+      text-align: center;
+      position: relative;
+    }
+
+    .inner-border {
+      position: absolute;
+      inset: 6px;
+      border: 1px dashed rgba(197, 160, 89, 0.45);
+      border-radius: 12px;
+      pointer-events: none;
+    }
+
+    .seal-box {
+      margin: 0 auto 16px;
+      width: 76px;
+      height: 76px;
+    }
+
+    .poem-main-title {
+      font-size: 34px;
+      letter-spacing: 6px;
+      color: var(--text-main);
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .poem-sub-colophon {
+      font-size: 13.5px;
+      color: var(--text-sub);
+      line-height: 1.6;
+      letter-spacing: 1px;
+      margin-bottom: 34px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(217, 210, 195, 0.6);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    @media (max-width: 440px) {
+      .poem-sub-colophon {
+        font-size: 12px;
+        letter-spacing: 0.5px;
+      }
+    }
+
+    .action-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .btn-install-main {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 16px 20px;
+      font-size: 19px;
+      font-family: var(--font-family);
+      font-weight: bold;
+      letter-spacing: 2px;
+      border-radius: 40px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.25s ease;
+      text-decoration: none;
+    }
+
+    .btn-mobile {
+      background: var(--vermilion);
+      color: #FFF;
+      box-shadow: 0 4px 16px rgba(184, 59, 46, 0.28);
+    }
+
+    .btn-mobile:hover {
+      background: var(--vermilion-hover);
+      box-shadow: 0 6px 20px rgba(184, 59, 46, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .btn-apk-sub {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 14px;
+      color: var(--vermilion);
+      background: var(--vermilion-light);
+      border: 1px solid rgba(184, 59, 46, 0.3);
+      padding: 9px 18px;
+      border-radius: 20px;
+      cursor: pointer;
+      text-decoration: none;
+      font-family: var(--font-family);
+      font-weight: 500;
+      margin-top: -6px;
+      margin-bottom: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-apk-sub:hover {
+      background: #F5D5D0;
+    }
+
+    .btn-pc {
+      background: #FFF;
+      color: var(--text-main);
+      border: 1.5px solid var(--border-color);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    }
+
+    .btn-pc:hover {
+      border-color: var(--vermilion);
+      color: var(--vermilion);
+      transform: translateY(-2px);
+    }
+
+    /* 微信右上角大箭头指引遮罩 */
+    .wechat-mask {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 18, 16, 0.92);
+      z-index: 9999;
+      color: #FFF;
+      padding: 24px 20px;
+      cursor: pointer;
+    }
+
+    .wechat-arrow-box {
+      position: absolute;
+      top: 14px;
+      right: 24px;
+      text-align: right;
+    }
+
+    .wechat-arrow {
+      font-size: 64px;
+      color: #FF5A45;
+      animation: bounceArrow 1.2s infinite;
+      line-height: 1;
+    }
+
+    @keyframes bounceArrow {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(6px, -6px); }
+    }
+
+    .wechat-guide-content {
+      margin-top: 86px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 28px 22px;
+      backdrop-filter: blur(8px);
+      line-height: 2;
+      font-size: 18px;
+    }
+
+    .wechat-guide-title {
+      font-size: 21px;
+      font-weight: bold;
+      color: #FFD285;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+
+    /* 弹窗通告 */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(44, 40, 37, 0.95);
+      color: #FFF;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 14px;
+      letter-spacing: 1px;
+      z-index: 1000;
+      display: none;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+    }
+  </style>
+</head>
+<body>
+  <div class="install-card">
+    <div class="inner-border"></div>
+
+    <!-- 朱砂白文印章 (传统回文右起：周庸 之印) -->
+    <div class="seal-box">
+      <svg viewBox="0 0 100 100" width="76" height="76">
+        <rect x="4" y="4" width="92" height="92" rx="14" fill="#B83B2E" stroke="#8B261B" stroke-width="2"/>
+        <rect x="10" y="10" width="80" height="80" rx="10" fill="none" stroke="#E5A93C" stroke-width="1.5" opacity="0.7"/>
+        <!-- 右列：周(上) 庸(下) -->
+        <text x="73" y="46" font-family="'Kaiti SC', 'STKaiti', 'KaiTi', serif" font-size="34" font-weight="bold" fill="#FBF8F1" text-anchor="middle">周</text>
+        <text x="73" y="84" font-family="'Kaiti SC', 'STKaiti', 'KaiTi', serif" font-size="34" font-weight="bold" fill="#FBF8F1" text-anchor="middle">庸</text>
+        <!-- 左列：之(上) 印(下) -->
+        <text x="27" y="46" font-family="'Kaiti SC', 'STKaiti', 'KaiTi', serif" font-size="34" font-weight="bold" fill="#FBF8F1" text-anchor="middle">之</text>
+        <text x="27" y="84" font-family="'Kaiti SC', 'STKaiti', 'KaiTi', serif" font-size="34" font-weight="bold" fill="#FBF8F1" text-anchor="middle">印</text>
+      </svg>
+    </div>
+
+    <h1 class="poem-main-title">周庸诗集</h1>
+    <p class="poem-sub-colophon">平生行吟寄心迹 · 寄怀神州与南洋 · 亲友门生雅玩珍藏</p>
+
+    <div class="action-group">
+      <!-- 手机安装 -->
+      <button id="btnInstallMobile" class="btn-install-main btn-mobile">
+        <span>📱</span> <span>一键安装到手机桌面</span>
+      </button>
+
+      <!-- 安卓 APK 直载备用 -->
+      <a id="btnDownloadApk" href="ZhouYongPoetry.apk" class="btn-apk-sub" download="周庸诗集.apk">
+        <span>📦</span> <span>直接下载安卓安装包 (.apk)</span>
+      </a>
+
+      <!-- 电脑安装 -->
+      <button id="btnInstallPC" class="btn-install-main btn-pc">
+        <span>🖥️</span> <span>一键安装到电脑桌面</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 微信右上角大箭头指引遮罩 -->
+  <div id="wechatMask" class="wechat-mask">
+    <div class="wechat-arrow-box">
+      <div class="wechat-arrow">↗</div>
+    </div>
+    <div class="wechat-guide-content">
+      <div class="wechat-guide-title">微信限制直接安装到桌面</div>
+      <p>① 请点击屏幕右上角的「<strong>···</strong>」</p>
+      <p>② 在弹出菜单中选择「<strong>在浏览器中打开</strong>」</p>
+      <p style="margin-top: 10px; font-size: 15px; color: #E0DACD;">（跳转后即可一键装入手机桌面随身品读）</p>
+    </div>
+    <p style="text-align: center; margin-top: 40px; font-size: 14px; opacity: 0.7;">点击屏幕任意位置关闭提示</p>
+  </div>
+
+  <div id="toastMsg" class="toast"></div>
+
+  <script>
+    const LIVE_URL = "https://zhouyong-poetry.zhouyongshiji.workers.dev";
+    const ua = navigator.userAgent.toLowerCase();
+    const isWeChat = /micromessenger/.test(ua);
+    const isIOS = /iphone|ipad|ipod/.test(ua);
+    const isMobile = /mobile|android|iphone|ipad|phone/.test(ua);
+
+    let deferredPrompt = null;
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+    });
+
+    const wechatMask = document.getElementById("wechatMask");
+    wechatMask.onclick = () => { wechatMask.style.display = "none"; };
+
+    function showToast(msg, duration = 3500) {
+      const t = document.getElementById("toastMsg");
+      t.textContent = msg;
+      t.style.display = "block";
+      setTimeout(() => { t.style.display = "none"; }, duration);
+    }
+
+    // 1. 手机安装逻辑
+    document.getElementById("btnInstallMobile").onclick = () => {
+      if (isWeChat) {
+        wechatMask.style.display = "block";
+        return;
+      }
+
+      if (isIOS) {
+        alert("📱 苹果手机安装步骤：\n\n1. 请在 Safari 浏览器中打开诗集；\n2. 点击屏幕底部的分享图标 ⎋；\n3. 选择「添加到主屏幕」即可！");
+        window.location.href = LIVE_URL;
+        return;
+      }
+
+      // 安卓原生尝试
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((res) => {
+          if (res.outcome === "accepted") {
+            showToast("已成功添加到手机桌面！");
+          }
+          deferredPrompt = null;
+        });
+      } else {
+        // 跳转主站
+        window.location.href = LIVE_URL;
+      }
+    };
+
+    // 2. 电脑安装逻辑 (自动生成 .url 快捷文件 + 跳转)
+    document.getElementById("btnInstallPC").onclick = () => {
+      if (isMobile) {
+        showToast("检测到您当前为手机设备，请点击上方【一键安装到手机桌面】");
+        return;
+      }
+
+      // 生成 Windows 桌面快捷方式文件 (.url) 并触发下载
+      const urlContent = "[InternetShortcut]\r\nURL=" + LIVE_URL + "\r\nIconIndex=0\r\n";
+      const blob = new Blob([urlContent], { type: "text/plain;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "《周庸诗集》.url";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+
+      alert("🖥️ 已为您生成【《周庸诗集》.url】桌面快捷文件！\n\n请直接将刚刚下载的文件拖拽到电脑桌面上，以后双击即可直达诗集大字品读！");
+      window.location.href = LIVE_URL;
+    };
+
+    // 3. 安卓 APK 按钮监听 (微信内点时同样提示跳出)
+    document.getElementById("btnDownloadApk").onclick = (e) => {
+      if (isWeChat) {
+        e.preventDefault();
+        wechatMask.style.display = "block";
+      }
+    };
+  </script>
+</body>
+</html>
