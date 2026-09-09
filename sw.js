@@ -3,7 +3,7 @@
  * 确保海内外读者及老先生在断网/离线环境下依然可极速加载全部诗卷
  */
 
-const CACHE_NAME = "zhouyong-poetry-v1.4.7";
+const CACHE_NAME = "zhouyong-poetry-v1.5.0";
 const ASSETS_TO_CACHE = [
   "./",
   "./manifest.json",
@@ -87,10 +87,36 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // 2. 静态资源请求处理 (CSS, JS, JSON, SVG 等)
+  // 2. 核心诗作数据请求 (poems.json, volumes.json) -> 网络优先，离线回退
+  // 保证只要用户在线，就能秒级获取周老最新诗篇；断网时无缝回退本地缓存
+  const isPoetryData = url.pathname.endsWith("/data/poems.json") || url.pathname.endsWith("/data/volumes.json");
+  if (isPoetryData) {
+    event.respondWith(
+      (async () => {
+        try {
+          const networkResponse = await fetch(event.request, { cache: "no-cache" });
+          if (networkResponse && networkResponse.status === 200) {
+            const cache = await caches.open(CACHE_NAME);
+            cache.put(event.request, networkResponse.clone());
+            return networkResponse;
+          }
+        } catch (err) {
+          // 离线或弱网时静默回退
+        }
+
+        const cached = await caches.match(event.request, { ignoreSearch: true });
+        if (cached) {
+          return cached;
+        }
+        return new Response("[]", { headers: { "Content-Type": "application/json; charset=utf-8" } });
+      })()
+    );
+    return;
+  }
+
+  // 3. 静态前端资源请求处理 (CSS, JS, SVG, 图标等) -> 缓存优先
   event.respondWith(
     (async () => {
-      // 缓存优先策略 (忽略 url query 参数如 ?_t=123 以提高命中率)
       const cachedResponse = await caches.match(event.request, { ignoreSearch: true });
       if (cachedResponse) {
         return cachedResponse;
@@ -109,7 +135,6 @@ self.addEventListener("fetch", (event) => {
         }
         return networkResponse;
       } catch (err) {
-        // 静态资源若离线且无缓存，返回 404 Response 而非让 Promise 拒绝触发崩溃
         return new Response(null, { status: 404, statusText: "Offline Resource Unavailable" });
       }
     })()

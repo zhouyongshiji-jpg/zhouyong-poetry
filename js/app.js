@@ -196,23 +196,33 @@
   }
 
   /**
-   * 渲染侧边栏卷目和诗题树
+   * 渲染侧边栏卷目和诗题树（支持按卷折叠/展开与当前卷自动联动）
    */
   function renderSidebar() {
     if (!el.volumesNavList) return;
     el.volumesNavList.innerHTML = "";
 
-    state.volumes.forEach(vol => {
+    const currentPoem = state.poems[state.currentPoemIndex];
+
+    state.volumes.forEach((vol, volIndex) => {
       const volPoems = state.poems.filter(p => p.volumeId === vol.id || p.volume.includes(vol.name.slice(0, 4)));
       
-      const volGroup = document.createElement("div");
+      const volGroup = document.createElement("details");
       volGroup.className = "volume-group";
+      volGroup.dataset.volId = vol.id;
+
+      // 默认展开当前诗作所在卷；若初次未定位则默认展开第一卷
+      const isOpen = currentPoem ? (currentPoem.volumeId === vol.id) : (volIndex === 0);
+      volGroup.open = isOpen;
 
       volGroup.innerHTML = `
-        <div class="volume-header" data-vol-id="${vol.id}">
-          <span>${vol.name}</span>
+        <summary class="volume-header" data-vol-id="${vol.id}" title="点击折叠或展开本卷">
+          <span class="volume-header-left">
+            <span class="volume-arrow">▶</span>
+            <span class="volume-title-text">${vol.name}</span>
+          </span>
           <span class="volume-badge">${volPoems.length} 首</span>
-        </div>
+        </summary>
         <ul class="poem-list" id="list-${vol.id}">
           ${volPoems.map(poem => `
             <li class="poem-nav-item ${state.poems[state.currentPoemIndex]?.id === poem.id ? "active" : ""}" 
@@ -227,7 +237,7 @@
       el.volumesNavList.appendChild(volGroup);
     });
 
-    // 绑定侧栏点击
+    // 绑定侧栏诗题点击
     el.volumesNavList.querySelectorAll(".poem-nav-item").forEach(item => {
       item.addEventListener("click", () => {
         const poemId = item.dataset.poemId;
@@ -258,9 +268,17 @@
       el.pageIndicator.textContent = `${state.currentPoemIndex + 1} / ${state.poems.length}`;
     }
 
-    // 更新侧边栏高亮
+    // 更新侧边栏高亮与所属卷展开状态
     document.querySelectorAll(".poem-nav-item").forEach(item => {
-      item.classList.toggle("active", item.dataset.poemId === poem.id);
+      const isCurrent = item.dataset.poemId === poem.id;
+      item.classList.toggle("active", isCurrent);
+      if (isCurrent) {
+        const parentVol = item.closest(".volume-group");
+        if (parentVol && !parentVol.open) {
+          parentVol.open = true;
+        }
+        item.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      }
     });
 
     // 生成朱砂印章 SVG

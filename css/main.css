@@ -426,32 +426,75 @@ body {
 }
 
 .volume-group {
-  margin-bottom: 18px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  transition: var(--transition-smooth);
 }
 
 .volume-header {
   font-weight: 700;
   font-size: calc(var(--font-size-base) * 0.88);
   color: var(--text-secondary);
-  padding: 8px 10px;
+  padding: 10px 12px;
   background: var(--bg-secondary);
-  border-radius: 6px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 6px;
+  list-style: none;
+  user-select: none;
   transition: var(--transition-smooth);
+}
+
+.volume-header::-webkit-details-marker {
+  display: none;
 }
 
 .volume-header:hover {
   color: var(--vermilion);
+  background: var(--bg-hover);
+}
+
+.volume-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.volume-arrow {
+  display: inline-block;
+  font-size: 10px;
+  color: var(--text-muted);
+  transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: rotate(0deg);
+  line-height: 1;
+}
+
+details.volume-group[open] > .volume-header .volume-arrow {
+  transform: rotate(90deg);
+  color: var(--vermilion);
+}
+
+details.volume-group[open] > .volume-header {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.volume-title-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .volume-badge {
   font-size: 12px;
   color: var(--text-muted);
   font-weight: normal;
+  flex-shrink: 0;
 }
 
 .poem-list {
