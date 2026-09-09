@@ -785,11 +785,16 @@ https://zhouyong-poetry.zhouyongshiji.workers.dev
    */
   function registerServiceWorker() {
     if ("serviceWorker" in navigator && (window.location.protocol === "https:" || window.location.hostname === "localhost")) {
-      window.addEventListener("load", () => {
+      const doRegister = () => {
         navigator.serviceWorker.register("./sw.js").catch(err => {
           console.log("SW 注册跳过或未处于 https 域:", err);
         });
-      });
+      };
+      if (document.readyState === "complete") {
+        doRegister();
+      } else {
+        window.addEventListener("load", doRegister);
+      }
     }
   }
 
