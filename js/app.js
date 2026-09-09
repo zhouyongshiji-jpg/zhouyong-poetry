@@ -101,7 +101,7 @@
       // 根据初始 URL Hash 定位诗篇（支持直达指定诗首）
       const initialHash = window.location.hash;
       if (initialHash.startsWith("#/poem/")) {
-        const targetId = initialHash.replace("#/poem/", "");
+        const targetId = initialHash.replace(/^#\/poem\//, "").split(/[?#&]/)[0].replace(/\/+$/, "");
         const targetIdx = state.poems.findIndex(p => p.id === targetId);
         if (targetIdx !== -1) {
           state.currentPoemIndex = targetIdx;
@@ -506,7 +506,7 @@
   function handleHashChange() {
     const hash = window.location.hash;
     if (hash.startsWith("#/poem/")) {
-      const id = hash.replace("#/poem/", "");
+      const id = hash.replace(/^#\/poem\//, "").split(/[?#&]/)[0].replace(/\/+$/, "");
       const index = state.poems.findIndex(p => p.id === id);
       if (index !== -1 && index !== state.currentPoemIndex) {
         state.currentPoemIndex = index;
