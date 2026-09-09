@@ -531,8 +531,13 @@
     if (el.btnPrevPoem) el.btnPrevPoem.onclick = () => navigateToPoem(state.currentPoemIndex - 1);
     if (el.btnNextPoem) el.btnNextPoem.onclick = () => navigateToPoem(state.currentPoemIndex + 1);
 
-    // 键盘左右箭头翻页
+    // 键盘左右箭头翻页与ESC退出弹窗
     window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeChronicleModal();
+        if (window.CardExporter) window.CardExporter.closeCardModal();
+        return;
+      }
       if (document.activeElement === el.searchInput) return;
       if (e.key === "ArrowLeft") navigateToPoem(state.currentPoemIndex - 1);
       if (e.key === "ArrowRight") navigateToPoem(state.currentPoemIndex + 1);
@@ -612,11 +617,15 @@
   function openChronicleModal() {
     if (!el.chronicleModal) return;
     renderChronicleContent();
+    el.chronicleModal.classList.add("active");
     el.chronicleModal.classList.add("show");
   }
 
   function closeChronicleModal() {
-    if (el.chronicleModal) el.chronicleModal.classList.remove("show");
+    if (el.chronicleModal) {
+      el.chronicleModal.classList.remove("active");
+      el.chronicleModal.classList.remove("show");
+    }
   }
 
   function renderChronicleContent() {
