@@ -98,6 +98,16 @@
         window.PoetrySearch.buildIndex(state.poems);
       }
 
+      // 根据初始 URL Hash 定位诗篇（支持直达指定诗首）
+      const initialHash = window.location.hash;
+      if (initialHash.startsWith("#/poem/")) {
+        const targetId = initialHash.replace("#/poem/", "");
+        const targetIdx = state.poems.findIndex(p => p.id === targetId);
+        if (targetIdx !== -1) {
+          state.currentPoemIndex = targetIdx;
+        }
+      }
+
       renderSidebar();
       renderCurrentPoem();
     } catch (err) {
