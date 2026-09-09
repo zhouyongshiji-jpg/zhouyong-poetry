@@ -6,6 +6,10 @@
  */
 
 (function () {
+  // 全集版本与编校日期（全站单一真实来源）
+  const APP_VERSION = "v1.5.1";
+  const EDITION_DATE = "2026-09-10";
+
   // 全局应用状态
   const state = {
     volumes: [],
@@ -76,7 +80,10 @@
       chronicleContentArea: document.getElementById("chronicleContentArea"),
       btnCloseChronicleModal: document.getElementById("btnCloseChronicleModal"),
       btnCloseChronicleBottom: document.getElementById("btnCloseChronicleBottom"),
-      btnCopyWechatText: document.getElementById("btnCopyWechatText")
+      btnCopyWechatText: document.getElementById("btnCopyWechatText"),
+
+      // 回顶浮标
+      btnBackToTop: document.getElementById("btnBackToTop")
     };
   }
 
@@ -98,15 +105,36 @@
         window.PoetrySearch.buildIndex(state.poems);
       }
 
-      // 根据初始 URL Hash 定位诗篇（支持直达指定诗首）
+      // 路由优先级：有效 Hash > 上次阅读记录 > 默认第一首 (0)
+      let resolvedIndex = 0;
+      let matchedByHash = false;
+
       const initialHash = window.location.hash;
       if (initialHash.startsWith("#/poem/")) {
         const targetId = initialHash.replace(/^#\/poem\//, "").split(/[?#&]/)[0].replace(/\/+$/, "");
         const targetIdx = state.poems.findIndex(p => p.id === targetId);
         if (targetIdx !== -1) {
-          state.currentPoemIndex = targetIdx;
+          resolvedIndex = targetIdx;
+          matchedByHash = true;
         }
       }
+
+      // 若未指定特定诗篇 Hash，则尝试恢复上次阅读位置
+      if (!matchedByHash) {
+        try {
+          const lastReadId = localStorage.getItem("zy_last_read_poem_id");
+          if (lastReadId) {
+            const lastIdx = state.poems.findIndex(p => p.id === lastReadId);
+            if (lastIdx !== -1) {
+              resolvedIndex = lastIdx;
+            }
+          }
+        } catch (e) {
+          console.warn("读取本地阅读记忆失败:", e);
+        }
+      }
+
+      state.currentPoemIndex = resolvedIndex;
 
       renderSidebar();
       renderCurrentPoem();
@@ -260,6 +288,11 @@
 
     const poem = state.poems[state.currentPoemIndex];
     window.location.hash = `#/poem/${poem.id}`;
+
+    // 记录阅读位置（仅保存稳定的诗作 ID，静默容错）
+    try {
+      localStorage.setItem("zy_last_read_poem_id", poem.id);
+    } catch (e) {}
 
     // 更新翻页按钮状态
     if (el.btnPrevPoem) el.btnPrevPoem.disabled = state.currentPoemIndex === 0;
@@ -640,6 +673,21 @@
       };
     }
     if (el.btnCopyWechatText) el.btnCopyWechatText.onclick = copyWechatSummary;
+
+    // 水墨长诗平滑回顶浮标
+    if (el.btnBackToTop) {
+      window.addEventListener("scroll", () => {
+        el.btnBackToTop.classList.toggle("show", window.scrollY > 320);
+      }, { passive: true });
+
+      el.btnBackToTop.onclick = () => {
+        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        window.scrollTo({
+          top: 0,
+          behavior: prefersReducedMotion ? "auto" : "smooth"
+        });
+      };
+    }
   }
 
   function openChronicleModal() {
@@ -685,7 +733,7 @@
         <h3 class="chronicle-title">《周庸诗集》全帙编年纲要</h3>
         <div class="chronicle-stats">
           <span>周庸 先生 著</span> · 
-          <span>100% 纯真迹五大卷</span> · 
+          <span>100% 纯真迹 ${state.volumes.length} 大卷</span> · 
           <span>全集计 <strong>${state.poems.length}</strong> 首</span>
         </div>
       </div>
@@ -705,57 +753,38 @@
         </ul>
       </div>
 
-      <div style="margin-top: 24px; display: flex; align-items: center; justify-content: flex-end; gap: 14px;">
-        <span style="font-family: var(--font-kaiti); font-size: 16px; color: var(--text-secondary);">周庸 敬题</span>
-        <div>${sealSvg}</div>
+      <div class="chronicle-colophon-box" style="margin-top: 22px; padding: 12px 16px; border-top: 1px dashed var(--border-color); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px;">
+        <span style="font-size: 13px; color: var(--text-muted);">全集版本 ${APP_VERSION} · ${EDITION_DATE} 编校 · 共 ${state.poems.length} 首亲笔真迹</span>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-family: var(--font-kaiti); font-size: 16px; color: var(--text-secondary);">周庸 敬题</span>
+          <div>${sealSvg}</div>
+        </div>
       </div>
     `;
   }
 
   function copyWechatSummary() {
     const totalCount = state.poems.length;
-    const v1Count = state.poems.filter(p => p.volumeId === "vol-1").length;
-    const v2Count = state.poems.filter(p => p.volumeId === "vol-2").length;
-    const v3Count = state.poems.filter(p => p.volumeId === "vol-3").length;
-    const v4Count = state.poems.filter(p => p.volumeId === "vol-4").length;
-    const v5Count = state.poems.filter(p => p.volumeId === "vol-5").length;
+    const volCount = state.volumes.length;
+
+    const volSections = state.volumes.map(vol => {
+      const volPoems = state.poems.filter(p => p.volumeId === vol.id || p.volume.includes(vol.name.slice(0, 4)));
+      return `◈【${vol.name}】\n▫ 篇数：共 ${volPoems.length} 首\n▫ 时段：${vol.period || '不详'}\n▫ 概述：${vol.description || ''}`;
+    }).join("\n\n");
 
     const text = `周老先生展信安好！
 
-您的全部诗作已为您精心整理完毕，全集共计 ${totalCount} 首您的亲笔真迹，无任何杂作。现已汇编为【纯真迹五大卷】，按编年与题材系统归档，特呈您一览：
+您的全部诗作已为您精心整理完毕，全集共计 ${totalCount} 首您的亲笔真迹，无任何杂作。现已汇编为【纯真迹 ${volCount} 大卷】，按编年与题材系统归档，特呈您一览：
 
 🌐 诗集正式访问网址：
 https://zhouyong-poetry.zhouyongshiji.workers.dev
 （电脑与手机直接点击即可秒开；若微信提示受限，点右上角“…”选择“在浏览器中打开”）
 
 ━━━━━━━━━━━━━━━
-📜 《周庸诗集》五大卷编年概览
+📜 《周庸诗集》${volCount}大卷编年概览
 ━━━━━━━━━━━━━━━
 
-◈【卷一·去国行与南洋客梦】
-▫ 篇数：共 ${v1Count} 首
-▫ 时段：2018年 — 2024年
-▫ 概述：收录去国前夕云南《抚仙湖诗五首》、海外夜市《饮酒歌》、客寓佛寺《游侬帕兰寺》、秋晨《晨绕拷桃》、贺晓铁大婚《七言古风》、异国《情人节》、宋干狂欢《泼水节随吟》、痛悼老友《悼铁流》、中秋宴聚《中秋抒怀》、《重游普吉来芭东》与世相针砭。
-
-◈【卷二·流浪者竹枝词】
-▫ 篇数：共 ${v2Count} 首
-▫ 时段：2025年5月 — 2025年8月
-▫ 概述：《流浪者竹枝词》完整大系！从《之一》一气呵成贯穿至《之158》。避秦求存、就医自嘲、拷汪宫记游、祈雨孝道、泰柬冲突、俄乌战事、江油校园之痛与海外饯行竹枝词全帙收录。
-
-◈【卷三·回乡曲与慈母寿】
-▫ 篇数：共 ${v3Count} 首
-▫ 时段：2025年8月 — 2025年11月
-▫ 概述：《回乡曲》完整大系！从《之001》至《之142》无一遗漏。深情记录一口川普返故里、老母盲聋倚门迎儿、长兄手足情深、同窗佳宴、大凉山第二故乡追忆、泸山古刹访友、李庄漫步、公车闻大爷阔论、九十八岁慈母寿诞、遵母令拒礼金、弟侄拼酒老屋宿醉与门前鱼塘垂钓。
-
-◈【卷四·游子吟与泰北行】
-▫ 篇数：共 ${v4Count} 首
-▫ 时段：2026年2月 — 2026年3月
-▫ 概述：丙午新春四首（《情人节抒怀》、《年夜饭》、《大年初一吟》、《又见金链花》）与泰北纪行《游子吟》系列（之1至之23，漫步清迈古城、塔佩红墙、登素贴山双龙寺、访清莱孟莱王铜像）。
-
-◈【卷五·暹罗长歌与晚晴行】
-▫ 篇数：共 ${v5Count} 首
-▫ 时段：2021年 — 2026年
-▫ 概述：客居泰国避秦行吟浩瀚长歌。涵盖《今日咖啡馆随吟》、《美臀篇》、《金链花四咏》、《拷涛放歌与闲吟》、《红树林三章》、《元旦海滩陷沙记》、《马年除夕寄语》、《再吟金链花》、《泰缅边塞行》、《五二O随吟》、《那日的纪念》、《清迈泰北行》、《水灯节》、《元旦随笔》、《偶遇泰警》、《重读商君列传》等长歌巨制。
+${volSections}
 
 ━━━━━━━━━━━━━━━
 ⚙️ 掌上诗馆贴心功能提示
@@ -767,7 +796,9 @@ https://zhouyong-poetry.zhouyongshiji.workers.dev
 ▪ 飞速检索：上方输入任意字词或拼音首字母，瞬间找到对应篇目。
 
 文字粗粝，皆是有感而发的心迹留痕；
-天涯羁旅，唯以诗心慰平生。`;
+天涯羁旅，唯以诗心慰平生。
+
+（版本 ${APP_VERSION} · ${EDITION_DATE} 编校录入）`;
 
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(() => {
