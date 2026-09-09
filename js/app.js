@@ -206,9 +206,9 @@
         <ul class="poem-list" id="list-${vol.id}">
           ${volPoems.map(poem => `
             <li class="poem-nav-item ${state.poems[state.currentPoemIndex]?.id === poem.id ? "active" : ""}" 
-                data-poem-id="${poem.id}">
-              <span>${poem.title}</span>
-              <span style="font-size: 11px; opacity: 0.7;">${poem.genre || ""}</span>
+                data-poem-id="${poem.id}" title="${poem.title} (${poem.genre || ''})">
+              <span class="poem-nav-title">${poem.title}</span>
+              <span class="poem-nav-genre">${poem.genre || ""}</span>
             </li>
           `).join("")}
         </ul>

@@ -374,12 +374,12 @@ body {
    ========================================================================== */
 .main-layout {
   flex: 1;
-  max-width: 1360px;
+  max-width: 1400px;
   width: 100%;
   margin: 0 auto;
   padding: 24px;
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 330px 1fr;
   gap: 28px;
 }
 
@@ -388,7 +388,7 @@ body {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 20px;
+  padding: 16px 12px;
   height: fit-content;
   max-height: calc(100vh - 120px);
   overflow-y: auto;
@@ -456,21 +456,58 @@ body {
 
 .poem-list {
   list-style: none;
-  padding-left: 8px;
+  padding-left: 0;
 }
 
 .poem-nav-item {
-  padding: 7px 10px;
-  margin: 3px 0;
+  padding: 6px 10px;
+  margin: 2px 0;
   border-radius: 4px;
-  font-size: calc(var(--font-size-base) * 0.82);
+  font-size: 15px;
   color: var(--text-secondary);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   transition: var(--transition-smooth);
   border-left: 2px solid transparent;
+}
+
+body.font-large .poem-nav-item {
+  font-size: 17px;
+  padding: 7px 10px;
+}
+
+body.font-xlarge .poem-nav-item {
+  font-size: 19px;
+  padding: 8px 10px;
+}
+
+.poem-nav-title {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.3px;
+  line-height: 1.4;
+}
+
+.poem-nav-genre {
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-size: 11px;
+  opacity: 0.7;
+  line-height: 1;
+}
+
+body.font-large .poem-nav-genre {
+  font-size: 12px;
+}
+
+body.font-xlarge .poem-nav-genre {
+  font-size: 13px;
 }
 
 .poem-nav-item:hover {
@@ -661,8 +698,8 @@ body {
   .sidebar-toc {
     position: fixed;
     top: 0;
-    left: -320px;
-    width: 290px;
+    left: -350px;
+    width: min(320px, 86vw);
     height: 100vh;
     max-height: 100vh;
     z-index: 1000;
