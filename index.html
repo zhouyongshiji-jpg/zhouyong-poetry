@@ -63,6 +63,11 @@
             🌙
           </button>
 
+          <!-- 查看诗集全帙志 -->
+          <button id="btnHeaderChronicle" class="btn-icon" title="查看诗集全帙志与五卷概览" aria-label="全集志">
+            📜
+          </button>
+
           <!-- 移动端打开目录按钮 -->
           <button id="btnToggleToc" class="btn-icon mobile-only" title="打开卷目目录" aria-label="目录">
             📑
@@ -81,6 +86,10 @@
         <div class="toc-header">
           <div class="toc-title">诗集卷目</div>
           <button id="btnCloseToc" class="btn-icon mobile-only" style="width: 32px; height: 32px; font-size: 14px;" aria-label="关闭目录">✕</button>
+        </div>
+        <!-- 全帙总览入口 -->
+        <div id="btnTocChronicle" class="toc-chronicle-btn" title="查看诗集编年大纲与全帙志">
+          <span>📜</span> <span>《周庸诗集》全帙志（五卷全览）</span>
         </div>
         <div id="volumesNavList">
           <!-- 由 app.js 动态渲染卷目与诗名 -->
@@ -178,6 +187,30 @@
       <div class="modal-footer">
         <button id="btnDownloadCard" class="btn-download-card">
           <span>💾</span> <span>保存高清大图</span>
+        </button>
+      </div>
+  </div>
+
+  <!-- 诗集全帙志与五卷编年概览弹窗 -->
+  <div id="chronicleModal" class="modal-backdrop">
+    <div class="modal-card-dialog modal-chronicle-dialog">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>📜</span> <span>《周庸诗集》全帙志（五卷全览）</span>
+        </div>
+        <button id="btnCloseChronicleModal" class="modal-close-btn" aria-label="关闭">✕</button>
+      </div>
+
+      <div class="modal-body chronicle-modal-body" id="chronicleContentArea">
+        <!-- 由 app.js 动态渲染 -->
+      </div>
+
+      <div class="modal-footer chronicle-modal-footer">
+        <button id="btnCopyWechatText" class="btn-action-pill btn-copy-wechat">
+          <span>📋</span> <span>一键复制微信 / LINE 分享文案</span>
+        </button>
+        <button id="btnCloseChronicleBottom" class="btn-action-pill" style="background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color);">
+          <span>关闭</span>
         </button>
       </div>
     </div>

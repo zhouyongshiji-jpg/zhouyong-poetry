@@ -67,7 +67,16 @@
       btnShareCard: document.getElementById("btnShareCard"),
       
       // 卷目导航列表
-      volumesNavList: document.getElementById("volumesNavList")
+      volumesNavList: document.getElementById("volumesNavList"),
+
+      // 全帙志与微信文案
+      btnHeaderChronicle: document.getElementById("btnHeaderChronicle"),
+      btnTocChronicle: document.getElementById("btnTocChronicle"),
+      chronicleModal: document.getElementById("chronicleModal"),
+      chronicleContentArea: document.getElementById("chronicleContentArea"),
+      btnCloseChronicleModal: document.getElementById("btnCloseChronicleModal"),
+      btnCloseChronicleBottom: document.getElementById("btnCloseChronicleBottom"),
+      btnCopyWechatText: document.getElementById("btnCopyWechatText")
     };
   }
 
@@ -583,6 +592,173 @@
         }
       };
     }
+
+    // 全集志弹窗开闭与复制
+    if (el.btnHeaderChronicle) el.btnHeaderChronicle.onclick = openChronicleModal;
+    if (el.btnTocChronicle) el.btnTocChronicle.onclick = () => {
+      closeSidebar();
+      openChronicleModal();
+    };
+    if (el.btnCloseChronicleModal) el.btnCloseChronicleModal.onclick = closeChronicleModal;
+    if (el.btnCloseChronicleBottom) el.btnCloseChronicleBottom.onclick = closeChronicleModal;
+    if (el.chronicleModal) {
+      el.chronicleModal.onclick = (e) => {
+        if (e.target === el.chronicleModal) closeChronicleModal();
+      };
+    }
+    if (el.btnCopyWechatText) el.btnCopyWechatText.onclick = copyWechatSummary;
+  }
+
+  function openChronicleModal() {
+    if (!el.chronicleModal) return;
+    renderChronicleContent();
+    el.chronicleModal.classList.add("show");
+  }
+
+  function closeChronicleModal() {
+    if (el.chronicleModal) el.chronicleModal.classList.remove("show");
+  }
+
+  function renderChronicleContent() {
+    if (!el.chronicleContentArea) return;
+
+    // 动态生成五卷卡片
+    const volCardsHtml = state.volumes.map((vol, idx) => {
+      const volPoems = state.poems.filter(p => p.volumeId === vol.id);
+      return `
+        <div class="chronicle-vol-card">
+          <div class="chronicle-vol-top">
+            <span class="chronicle-vol-name">${vol.name}</span>
+            <span class="chronicle-vol-meta">${vol.period} · 共 ${volPoems.length} 首</span>
+          </div>
+          <div class="chronicle-vol-desc">
+            <p style="margin-bottom: 6px;"><strong>【提要】</strong>${vol.description}</p>
+            <p style="font-style: italic; color: var(--text-muted); font-size: 13px;"><strong>【卷序】</strong>${vol.foreword}</p>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    const sealSvg = window.SealGenerator 
+      ? window.SealGenerator.createSealSVG({ text: "周庸之印", size: 60, style: "yin" })
+      : "";
+
+    el.chronicleContentArea.innerHTML = `
+      <div class="chronicle-header-box">
+        <h3 class="chronicle-title">《周庸诗集》全帙编年纲要</h3>
+        <div class="chronicle-stats">
+          <span>周庸 先生 著</span> · 
+          <span>100% 纯真迹五大卷</span> · 
+          <span>全集计 <strong>${state.poems.length}</strong> 首</span>
+        </div>
+      </div>
+
+      <div class="chronicle-volumes-list">
+        ${volCardsHtml}
+      </div>
+
+      <div class="chronicle-features-box">
+        <div style="font-weight: bold; color: var(--text-primary); margin-bottom: 8px;">📱 掌上数字诗馆适老与分享特色：</div>
+        <ul style="padding-left: 20px; line-height: 1.8;">
+          <li><strong>大字护眼</strong>：点击右上角「大字」或「特大」，字大如盘，久读不累。</li>
+          <li><strong>改换竖排</strong>：点击「改竖排」重现宣纸古籍线装神韵，自右向左自然翻阅。</li>
+          <li><strong>闭目听诗</strong>：点击「听诗」自动以舒缓语调朗诵诗作，视力疲劳时可静心聆听。</li>
+          <li><strong>生成雅卡</strong>：点击「生成雅卡」一键输出 2x 高清宣纸美图，方便长按发送朋友圈或 LINE。</li>
+          <li><strong>即打即搜</strong>：支持诗句全文、地名、年份及拼音首字母即时极速检索。</li>
+        </ul>
+      </div>
+
+      <div style="margin-top: 24px; display: flex; align-items: center; justify-content: flex-end; gap: 14px;">
+        <span style="font-family: var(--font-kaiti); font-size: 16px; color: var(--text-secondary);">周庸 敬题</span>
+        <div>${sealSvg}</div>
+      </div>
+    `;
+  }
+
+  function copyWechatSummary() {
+    const text = `周老先生展信安好！
+
+您的全部诗作已为您精心整理完毕，全集共计 329 首您的亲笔真迹，无任何杂作。现已汇编为【纯真迹五大卷】，按编年与题材系统归档，特呈您一览：
+
+🌐 诗集正式访问网址：
+https://zhouyong-poetry.zhouyongshiji.workers.dev
+（电脑与手机直接点击即可秒开；若微信提示受限，点右上角“…”选择“在浏览器中打开”）
+
+━━━━━━━━━━━━━━━
+📜 《周庸诗集》五大卷编年概览
+━━━━━━━━━━━━━━━
+
+◈【卷一·去国行与南洋客梦】
+▫ 篇数：共 17 首
+▫ 时段：2018年 — 2024年
+▫ 概述：收录去国前夕云南《抚仙湖诗五首》、海外夜市《饮酒歌》、客寓佛寺《游侬帕兰寺》、秋晨《晨绕拷桃》、贺晓铁大婚《七言古风》、异国《情人节》、宋干狂欢《泼水节随吟》、痛悼老友《悼铁流》、中秋宴聚《中秋抒怀》、《重游普吉来芭东》与世相针砭。
+
+◈【卷二·流浪者竹枝词】
+▫ 篇数：共 141 首
+▫ 时段：2025年5月 — 2025年8月
+▫ 概述：《流浪者竹枝词》完整大系！从《之一》一气呵成贯穿至《之158》。避秦求存、就医自嘲、拷汪宫记游、祈雨孝道、泰柬冲突、俄乌战事、江油校园之痛与海外饯行竹枝词全帙收录。
+
+◈【卷三·回乡曲与慈母寿】
+▫ 篇数：共 124 首
+▫ 时段：2025年8月 — 2025年11月
+▫ 概述：《回乡曲》完整大系！从《之001》至《之142》无一遗漏。深情记录一口川普返故里、老母盲聋倚门迎儿、长兄手足情深、同窗佳宴、大凉山第二故乡追忆、泸山古刹访友、李庄漫步、公车闻大爷阔论、九十八岁慈母寿诞、遵母令拒礼金、弟侄拼酒老屋宿醉与门前鱼塘垂钓。
+
+◈【卷四·游子吟与泰北行】
+▫ 篇数：共 27 首
+▫ 时段：2026年2月 — 2026年3月
+▫ 概述：丙午新春四首（《情人节抒怀》、《年夜饭》、《大年初一吟》、《又见金链花》）与泰北纪行《游子吟》系列（之1至之23，漫步清迈古城、塔佩红墙、登素贴山双龙寺、访清莱孟莱王铜像）。
+
+◈【卷五·暹罗长歌与晚晴行】
+▫ 篇数：共 20 首
+▫ 时段：2025年 — 2026年
+▫ 概述：南洋避秦生活古风长歌。涵盖《今日咖啡馆随吟》、《美臀篇》、《四吟金链花》、《元旦海滩陷沙记》、《马年除夕寄语》、《再吟金链花》、《泰缅边塞行》、《五二O随吟》、《那日的纪念》、《晨步遇雨》、《定风波·浴海》、《七月闲吟》、《八月闲吟》、《泰缅边境吟》、《暗夜醉吟》、《醉夫吟》、《失乐园》、《考新蕾发吟留别》等长歌巨制。
+
+━━━━━━━━━━━━━━━
+⚙️ 掌上诗馆贴心功能提示
+━━━━━━━━━━━━━━━
+▪ 大字护眼：顶部可随时点「大字」或「特大」，大字如盘，久读不累。
+▪ 改换竖排：点「改竖排」即转为古典宣纸线装书，自右向左自然翻阅。
+▪ 闭目听诗：点「听诗」有舒缓诵读，疲劳时可闭目静听。
+▪ 制作雅卡：每首诗点「生成雅卡」，一键存入手机相册，方便发朋友圈或LINE。
+▪ 飞速检索：上方输入任意字词或拼音首字母，瞬间找到对应篇目。
+
+文字粗粝，皆是有感而发的心迹留痕；
+天涯羁旅，唯以诗心慰平生。`;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        showCopySuccess();
+      }).catch(() => fallbackCopy(text));
+    } else {
+      fallbackCopy(text);
+    }
+  }
+
+  function showCopySuccess() {
+    if (!el.btnCopyWechatText) return;
+    const oldHtml = el.btnCopyWechatText.innerHTML;
+    el.btnCopyWechatText.innerHTML = "<span>✅</span> <span>已成功复制！可直接发微信或LINE</span>";
+    el.btnCopyWechatText.style.background = "#059669";
+    setTimeout(() => {
+      el.btnCopyWechatText.innerHTML = oldHtml;
+      el.btnCopyWechatText.style.background = "#07C160";
+    }, 3000);
+  }
+
+  function fallbackCopy(text) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand("copy");
+      showCopySuccess();
+    } catch (e) {
+      alert("请手动长按复制文案");
+    }
+    document.body.removeChild(ta);
   }
 
   function openSidebar() {

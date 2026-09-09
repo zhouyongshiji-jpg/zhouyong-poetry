@@ -634,3 +634,141 @@ body.font-xlarge .mode-vertical .poem-page-content {
     height: 500px;
   }
 }
+
+/* ==========================================================================
+   诗集全帙志（五卷全览概览与一键复制）样式
+   ========================================================================== */
+.toc-chronicle-btn {
+  margin: 10px 14px 14px 14px;
+  background: var(--vermilion-light);
+  border: 1px solid rgba(184, 59, 46, 0.3);
+  color: var(--vermilion);
+  padding: 9px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: var(--transition-smooth);
+}
+
+.toc-chronicle-btn:hover {
+  background: rgba(184, 59, 46, 0.18);
+  border-color: var(--vermilion);
+}
+
+.modal-chronicle-dialog {
+  max-width: 760px;
+  width: 95%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.chronicle-modal-body {
+  overflow-y: auto;
+  padding: 24px 28px;
+  display: block;
+  text-align: left;
+  line-height: 1.8;
+  max-height: calc(90vh - 140px);
+}
+
+.chronicle-header-box {
+  text-align: center;
+  border-bottom: 2px double var(--border-color);
+  padding-bottom: 18px;
+  margin-bottom: 22px;
+}
+
+.chronicle-title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.chronicle-stats {
+  font-size: 14px;
+  color: var(--vermilion);
+  letter-spacing: 1px;
+}
+
+.chronicle-vol-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--vermilion);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.chronicle-vol-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.chronicle-vol-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chronicle-vol-name {
+  font-size: 17px;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.chronicle-vol-meta {
+  font-size: 13px;
+  color: var(--vermilion);
+  background: var(--vermilion-light);
+  padding: 2px 10px;
+  border-radius: 12px;
+}
+
+.chronicle-vol-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.chronicle-features-box {
+  background: var(--bg-card);
+  border: 1px dashed var(--border-color);
+  border-radius: 6px;
+  padding: 16px 20px;
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.chronicle-modal-footer {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-copy-wechat {
+  background: #07C160;
+  color: #FFF;
+  border: none;
+  font-weight: bold;
+}
+
+.btn-copy-wechat:hover {
+  background: #06AD56;
+}
+
