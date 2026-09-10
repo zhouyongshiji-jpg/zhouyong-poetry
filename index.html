@@ -19,9 +19,9 @@
   <link rel="icon" type="image/png" sizes="512x512" href="assets/icons/icon-512.png">
   <link rel="icon" type="image/svg+xml" href="assets/icons/icon-192.svg">
 
-  <!-- 样式表 -->
-  <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="css/book.css">
+  <!-- 样式表 (添加版本戳击穿强缓存) -->
+  <link rel="stylesheet" href="css/main.css?v=1.5.6">
+  <link rel="stylesheet" href="css/book.css?v=1.5.6">
 </head>
 <body class="font-standard">
 
@@ -95,9 +95,9 @@
           <span>📜</span> <span>《周庸诗集》全帙志（五卷全览）</span>
         </div>
         <!-- 典藏至桌面入口 (支持手机PWA、安卓APK与电脑大屏桌面安装) -->
-        <div id="btnTocInstallApp" class="toc-chronicle-btn toc-install-btn" title="将诗馆典藏安装至手机桌面、下载安卓APK或电脑独立应用">
-          <span>📥</span> <span>典藏诗卷至桌面（手机/电脑）</span>
-        </div>
+        <button id="btnTocInstallApp" class="toc-chronicle-btn toc-install-btn" onclick="window.openInstallModal &amp;&amp; window.openInstallModal()" title="将诗馆典藏安装至手机桌面、下载安卓APK或电脑独立应用">
+          <span style="pointer-events:none;">📥</span> <span style="pointer-events:none;">典藏诗卷至桌面（手机/电脑）</span>
+        </button>
         <div id="volumesNavList">
           <!-- 由 app.js 动态渲染卷目与诗名 -->
         </div>
@@ -224,16 +224,81 @@
     </div>
   </div>
 
+  <!-- 典藏诗卷至桌面（手机/APK/电脑）弹窗 -->
+  <div id="installAppModal" class="modal-backdrop">
+    <div class="modal-card-dialog modal-chronicle-dialog" style="max-width: 520px;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>📥</span> <span>典藏诗卷至桌面</span>
+        </div>
+        <button id="btnCloseInstallAppModal" class="modal-close-btn" onclick="window.closeInstallModal &amp;&amp; window.closeInstallModal()" aria-label="关闭">✕</button>
+      </div>
+
+      <div class="modal-body" style="padding: 24px 22px 16px; font-family: var(--font-kaiti, serif);">
+        <p style="font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 20px; text-align: left;">
+          为方便周庸先生及亲友门生随时以大字品读诗卷，推荐将诗馆典藏安装至设备桌面：
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <!-- 通道 1：手机桌面安装 (PWA 原生) -->
+          <button id="btnModalInstallMobile" class="pwa-install-action-btn" onclick="window.triggerPromptFromGesture &amp;&amp; window.triggerPromptFromGesture()" style="margin-bottom:0;">
+            <span>📱</span> <span>添加到手机桌面（官方应用）</span>
+          </button>
+
+          <!-- 通道 2：安卓 APK 安装包直载 (原生超链接，点击即下，零依赖) -->
+          <a id="btnModalDownloadApk" href="ZhouYongPoetry.apk" class="pwa-apk-sub-btn" download="周庸诗集.apk" style="display: flex; align-items: center; justify-content: center; text-decoration: none; padding: 13px 18px; font-size: 15px; font-weight: bold; margin: 0; box-sizing: border-box;">
+            <span>📦</span> <span>直接下载安卓安装包 (.apk)</span>
+          </a>
+
+          <!-- 通道 3：电脑桌面安装 (PWA 原生 / 独立大屏应用) -->
+          <button id="btnModalInstallPC" class="pwa-install-action-btn pwa-install-pc-btn" onclick="window.triggerPromptFromGesture &amp;&amp; window.triggerPromptFromGesture()" style="margin-bottom: 0;">
+            <span>🖥️</span> <span>安装到电脑桌面（独立大屏窗口）</span>
+          </button>
+        </div>
+
+        <!-- 浏览器快捷指引 -->
+        <div class="pwa-help-steps" style="margin-top: 18px; font-size: 13px; line-height: 1.8; text-align: left; background: var(--bg-secondary); border-radius: 8px; padding: 12px 14px;">
+          <div style="font-weight: bold; color: var(--vermilion); margin-bottom: 4px;">各端备用简易指引：</div>
+          <div>• <strong>安卓手机</strong>：推荐优先点击上方【直接下载安卓安装包】，安全快捷；</div>
+          <div>• <strong>苹果手机</strong>：点击 Safari 底部【分享 ⎋】图标，向上滑选择【添加到主屏幕】；</div>
+          <div>• <strong>电脑端</strong>：点击 Edge / Chrome 浏览器地址栏最右侧的【安装应用 ⊞】小图标。</div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding: 12px 20px 18px; justify-content: center;">
+        <button id="btnCloseInstallAppBottom" class="btn-action-pill" onclick="window.closeInstallModal &amp;&amp; window.closeInstallModal()" style="background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border-color); min-width: 140px;">
+          <span>我知道了 · 返回诗卷</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- 水墨长诗平滑回顶浮标 (古风朱砂小印) -->
   <button id="btnBackToTop" class="btn-back-to-top" title="回到诗篇顶部" aria-label="返回诗篇顶部">
     <span class="back-to-top-icon">▲</span>
     <span class="back-to-top-text">回顶</span>
   </button>
 
-  <!-- 脚本引入 (按依赖严格排序) -->
-  <script src="js/seal.js"></script>
-  <script src="js/search.js"></script>
-  <script src="js/card-exporter.js"></script>
-  <script src="js/app.js"></script>
+  <script>
+    // 典藏安装弹窗原生秒开逻辑（独立于外部脚本，100% 极速响应）
+    window.openInstallModal = function() {
+      var m = document.getElementById("installAppModal");
+      if (m) m.classList.add("show");
+      var drawer = document.getElementById("sidebarToc");
+      if (drawer) drawer.classList.remove("open");
+      var backdrop = document.getElementById("sidebarBackdrop");
+      if (backdrop) backdrop.classList.remove("show");
+    };
+    window.closeInstallModal = function() {
+      var m = document.getElementById("installAppModal");
+      if (m) m.classList.remove("show");
+    };
+  </script>
+
+  <!-- 脚本引入 (附带版本戳击穿强缓存，按依赖严格排序) -->
+  <script src="js/seal.js?v=1.5.6"></script>
+  <script src="js/search.js?v=1.5.6"></script>
+  <script src="js/card-exporter.js?v=1.5.6"></script>
+  <script src="js/app.js?v=1.5.6"></script>
 </body>
 </html>

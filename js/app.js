@@ -7,7 +7,7 @@
 
 (function () {
   // 全集版本与编校日期（全站单一真实来源）
-  const APP_VERSION = "v1.5.5";
+  const APP_VERSION = "v1.5.6";
   const EDITION_DATE = "2026-09-10";
 
   // 全局应用状态
@@ -669,11 +669,15 @@
     // 目录抽屉内“典藏诗卷至桌面（手机/电脑）”
     if (el.btnTocInstallApp) {
       el.btnTocInstallApp.onclick = () => {
-        closeSidebar();
-        const isMobile = /mobile|android|iphone|ipad|phone/.test(navigator.userAgent.toLowerCase());
-        showInstallHelpModal(!isMobile);
+        if (window.openInstallModal) {
+          window.openInstallModal();
+        } else {
+          closeSidebar();
+          const isMobile = /mobile|android|iphone|ipad|phone/.test(navigator.userAgent.toLowerCase());
+          showInstallHelpModal(!isMobile);
+        }
       };
-    };
+    }
     if (el.btnCloseChronicleModal) el.btnCloseChronicleModal.onclick = closeChronicleModal;
     if (el.btnCloseChronicleBottom) el.btnCloseChronicleBottom.onclick = closeChronicleModal;
     if (el.chronicleModal) {
@@ -682,6 +686,24 @@
       };
     }
     if (el.btnCopyWechatText) el.btnCopyWechatText.onclick = copyWechatSummary;
+
+    // 典藏安装弹窗交互绑定
+    const installAppModal = document.getElementById("installAppModal");
+    if (installAppModal) {
+      installAppModal.onclick = (e) => {
+        if (e.target === installAppModal && window.closeInstallModal) {
+          window.closeInstallModal();
+        }
+      };
+    }
+    const btnModalInstallMobile = document.getElementById("btnModalInstallMobile");
+    if (btnModalInstallMobile) {
+      btnModalInstallMobile.onclick = () => triggerPromptFromGesture();
+    }
+    const btnModalInstallPC = document.getElementById("btnModalInstallPC");
+    if (btnModalInstallPC) {
+      btnModalInstallPC.onclick = () => triggerPromptFromGesture();
+    }
 
     // 水墨长诗平滑回顶浮标
     if (el.btnBackToTop) {
@@ -902,6 +924,7 @@ ${volSections}
     window.addEventListener("appinstalled", () => {
       console.log("《周庸诗集》已成功安装至桌面");
       deferredInstallPrompt = null;
+      if (window.closeInstallModal) window.closeInstallModal();
       const modal = document.querySelector(".pwa-help-modal");
       if (modal) modal.remove();
     });
@@ -909,7 +932,11 @@ ${volSections}
     // 若携带安装参数进入，立即弹出雅致安装卡片，供用户点击直接唤起系统弹窗或极速下载
     if (isMobileInstallReq || isPCInstallReq) {
       setTimeout(() => {
-        showInstallHelpModal(isPCInstallReq);
+        if (window.openInstallModal) {
+          window.openInstallModal();
+        } else {
+          showInstallHelpModal(isPCInstallReq);
+        }
       }, 350);
     }
   }
@@ -920,6 +947,7 @@ ${volSections}
       deferredInstallPrompt.userChoice.then((res) => {
         if (res.outcome === "accepted") {
           console.log("用户同意安装");
+          if (window.closeInstallModal) window.closeInstallModal();
           const modal = document.querySelector(".pwa-help-modal");
           if (modal) modal.remove();
         }
@@ -932,8 +960,13 @@ ${volSections}
       if (tip) tip.style.display = "block";
     }
   }
+  window.triggerPromptFromGesture = triggerPromptFromGesture;
 
   function showInstallHelpModal(isPC = false) {
+    if (window.openInstallModal) {
+      window.openInstallModal();
+      return;
+    }
     if (document.querySelector(".pwa-help-modal")) return;
 
     const modal = document.createElement("div");

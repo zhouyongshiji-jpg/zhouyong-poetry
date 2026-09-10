@@ -1006,6 +1006,20 @@ body.font-xlarge .poem-nav-genre {
   box-shadow: 0 6px 18px rgba(184, 59, 46, 0.45);
 }
 
+.pwa-install-pc-btn {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border: 1.5px solid var(--border-color) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+.pwa-install-pc-btn:hover {
+  border-color: var(--gold-accent) !important;
+  color: var(--gold-accent) !important;
+  background: rgba(197, 160, 89, 0.08) !important;
+  transform: translateY(-1px);
+}
+
 .pwa-apk-sub-btn {
   display: flex;
   align-items: center;
