@@ -7,7 +7,8 @@
       "namespace": "android_app",
       "package_name": "com.zhouyong.poetry",
       "sha256_cert_fingerprints": [
-        "90:E8:7D:E7:6B:A8:A3:A7:E6:3D:9D:AB:55:FF:7B:36:2E:55:26:36:76:85:06:1E:23:34:3C:CE:34:DB:02:72"
+        "90:E8:7D:E7:6B:A8:A3:A7:E6:3D:9D:AB:55:FF:7B:36:2E:55:26:36:76:85:06:1E:23:34:3C:CE:34:DB:02:72",
+        "D0:BD:DF:AD:E3:1A:7D:E4:95:0A:57:E8:C7:87:C6:0E:F3:5F:85:D7:F8:3D:14:A2:95:A9:5A:E9:08:7E:A7:11"
       ]
     }
   }

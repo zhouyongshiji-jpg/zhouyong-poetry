@@ -340,26 +340,25 @@
       }
     };
 
-    // 2. 电脑安装逻辑 (自动生成 .url 快捷文件 + 跳转)
+    // 2. 电脑安装逻辑 (唤起 Edge/Chrome 原生桌面应用安装)
     document.getElementById("btnInstallPC").onclick = () => {
       if (isMobile) {
         showToast("检测到您当前为手机设备，请点击上方【一键安装到手机桌面】");
         return;
       }
 
-      // 生成 Windows 桌面快捷方式文件 (.url) 并触发下载
-      const urlContent = "[InternetShortcut]\r\nURL=" + LIVE_URL + "\r\nIconIndex=0\r\n";
-      const blob = new Blob([urlContent], { type: "text/plain;charset=utf-8" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "《周庸诗集》.url";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(a.href);
-
-      alert("🖥️ 已为您生成【《周庸诗集》.url】桌面快捷文件！\n\n请直接将刚刚下载的文件拖拽到电脑桌面上，以后双击即可直达诗集大字品读！");
-      window.location.href = LIVE_URL;
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((res) => {
+          if (res.outcome === "accepted") {
+            showToast("已成功安装至电脑桌面！");
+          }
+          deferredPrompt = null;
+        });
+      } else {
+        // 跳转主站并携带 ?install=pc 自动唤起电脑端独立窗口应用安装
+        window.location.href = LIVE_URL + "?install=pc";
+      }
     };
 
     // 3. 安卓 APK 按钮监听 (微信内点时同样提示跳出)

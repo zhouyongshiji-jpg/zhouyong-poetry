@@ -7,7 +7,7 @@
 
 (function () {
   // 全集版本与编校日期（全站单一真实来源）
-  const APP_VERSION = "v1.5.2";
+  const APP_VERSION = "v1.5.3";
   const EDITION_DATE = "2026-09-10";
 
   // 全局应用状态
@@ -866,14 +866,14 @@ ${volSections}
   }
 
   /**
-   * PWA 桌面/移动端安装引导与事件捕获
+   * PWA 桌面/移动端安装引导与事件捕获 (去横幅干扰 · 纯净直接唤起)
    */
   let deferredInstallPrompt = null;
-  let installBannerEl = null;
 
   function initPWAInstall() {
     const urlParams = new URLSearchParams(window.location.search);
-    const isInstallReq = urlParams.get("install") === "1" || urlParams.get("action") === "install";
+    const isMobileInstallReq = urlParams.get("install") === "1" || urlParams.get("action") === "install";
+    const isPCInstallReq = urlParams.get("install") === "pc";
 
     // 监听原生安装前置事件
     window.addEventListener("beforeinstallprompt", (e) => {
@@ -881,14 +881,11 @@ ${volSections}
       deferredInstallPrompt = e;
       console.log("捕获到 PWA beforeinstallprompt 事件");
 
-      if (isInstallReq) {
-        // 如果是携带 ?install=1 进来的，稍等 600ms 后直接唤起系统安装弹窗
+      if (isMobileInstallReq || isPCInstallReq) {
+        // 如果是从安装单页跳转而来，立即唤起原生系统级安装确认！
         setTimeout(() => {
-          triggerNativeInstall();
-        }, 600);
-      } else {
-        // 常规浏览时显示顶部温和的安装条
-        showInstallBanner();
+          triggerNativeInstall(isPCInstallReq);
+        }, 500);
       }
     });
 
@@ -896,83 +893,64 @@ ${volSections}
     window.addEventListener("appinstalled", () => {
       console.log("《周庸诗集》已成功安装至本地桌面");
       deferredInstallPrompt = null;
-      hideInstallBanner();
+      const modal = document.querySelector(".pwa-help-modal");
+      if (modal) modal.remove();
     });
 
-    // 如果从 ?install=1 进入，但在 1500ms 内未捕获到原生 prompt（如国产安卓ROM限制、Edge菜单置灰、或内置浏览器）
-    if (isInstallReq) {
+    // 若从 ?install=1 进入，但在 1500ms 内未捕获到原生 prompt（国产安卓ROM限制、Edge菜单置灰等），弹出兜底卡片
+    if (isMobileInstallReq) {
       setTimeout(() => {
         if (!deferredInstallPrompt) {
-          showInstallHelpModal();
+          showInstallHelpModal(false);
+        }
+      }, 1500);
+    } else if (isPCInstallReq) {
+      // 若从 ?install=pc 进入，1500ms 内未调起系统弹窗，弹出电脑端专用指引卡片
+      setTimeout(() => {
+        if (!deferredInstallPrompt) {
+          showInstallHelpModal(true);
         }
       }, 1500);
     }
   }
 
-  function triggerNativeInstall() {
+  function triggerNativeInstall(isPC = false) {
     if (deferredInstallPrompt) {
       deferredInstallPrompt.prompt();
       deferredInstallPrompt.userChoice.then((choiceResult) => {
         if (choiceResult.outcome === "accepted") {
           console.log("用户已同意安装诗集应用");
-          hideInstallBanner();
         }
         deferredInstallPrompt = null;
       });
     } else {
-      showInstallHelpModal();
+      showInstallHelpModal(isPC);
     }
   }
 
-  function showInstallBanner() {
-    if (sessionStorage.getItem("zy_dismiss_install_bar")) return;
-    if (document.querySelector(".pwa-install-bar")) return;
-
-    installBannerEl = document.createElement("div");
-    installBannerEl.className = "pwa-install-bar";
-    installBannerEl.innerHTML = `
-      <div class="pwa-install-info">
-        <span>📱</span> <span>将《周庸诗集》添加到桌面，随时大字翻阅</span>
-      </div>
-      <div class="pwa-install-btns">
-        <button id="pwaBannerInstallBtn" class="pwa-btn-install">立即添加</button>
-        <a href="ZhouYongPoetry.apk" class="pwa-btn-apk" download="周庸诗集.apk">安卓APK</a>
-        <button id="pwaBannerCloseBtn" class="pwa-btn-close" aria-label="关闭">✕</button>
-      </div>
-    `;
-    document.body.prepend(installBannerEl);
-
-    const bannerBtn = document.getElementById("pwaBannerInstallBtn");
-    if (bannerBtn) {
-      bannerBtn.addEventListener("click", () => {
-        triggerNativeInstall();
-      });
-    }
-    const closeBtn = document.getElementById("pwaBannerCloseBtn");
-    if (closeBtn) {
-      closeBtn.addEventListener("click", () => {
-        hideInstallBanner();
-        sessionStorage.setItem("zy_dismiss_install_bar", "1");
-      });
-    }
-  }
-
-  function hideInstallBanner() {
-    if (installBannerEl && installBannerEl.parentNode) {
-      installBannerEl.parentNode.removeChild(installBannerEl);
-      installBannerEl = null;
-    }
-  }
-
-  function showInstallHelpModal() {
+  function showInstallHelpModal(isPC = false) {
     if (document.querySelector(".pwa-help-modal")) return;
 
     const modal = document.createElement("div");
     modal.className = "pwa-help-modal";
     const isIOS = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
 
+    const titleText = isPC ? "安装到电脑桌面" : "添加到手机桌面";
+    const descText = isPC 
+      ? "为方便以大屏舒心品读，推荐将《周庸诗集》作为独立应用安装至电脑桌面："
+      : "为方便周庸先生及亲友随时以大字翻阅诗卷，建议将诗馆添加至桌面快捷访问：";
+
     let stepsHtml = "";
-    if (isIOS) {
+    if (isPC) {
+      stepsHtml = `
+        <div class="pwa-help-steps">
+          <div>① 请查看当前 Edge 或 Chrome 浏览器顶部的<strong>地址栏最右侧</strong>；</div>
+          <div>② 点击带有小电脑或加号的【<strong>安装应用 ⊞</strong>】图标；</div>
+          <div>③ 在弹出的确认框中点击【<strong>安装</strong>】，即可生成电脑桌面专属应用！</div>
+          <div style="font-size:12.5px; color:var(--text-muted); margin-top:6px;">（安装后将拥有专属独立窗口与水墨印章图标，无地址栏干扰）</div>
+        </div>
+      `;
+    } else if (isIOS) {
       stepsHtml = `
         <div class="pwa-help-steps">
           <div>① 点击 Safari 浏览器底部的【<strong>分享 ⎋</strong>】图标；</div>
@@ -996,10 +974,8 @@ ${volSections}
 
     modal.innerHTML = `
       <div class="pwa-help-card">
-        <div class="pwa-help-title">添加到手机桌面</div>
-        <div class="pwa-help-desc">
-          为方便周庸先生及亲友随时以大字翻阅诗卷，建议将诗馆添加至桌面快捷访问：
-        </div>
+        <div class="pwa-help-title">${titleText}</div>
+        <div class="pwa-help-desc">${descText}</div>
         ${stepsHtml}
         <button class="pwa-help-close-btn" id="pwaHelpCloseBtn">我知道了 · 进入诗卷</button>
       </div>
