@@ -34,7 +34,6 @@
     applyStoredPreferences();
     setupEventListeners();
     await loadData();
-    initRouter();
     registerServiceWorker();
     initPWAInstall();
   }
