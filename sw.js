@@ -3,7 +3,7 @@
  * 确保海内外读者及老先生在断网/离线环境下依然可极速加载全部诗卷
  */
 
-const CACHE_NAME = "zhouyong-poetry-v1.5.3";
+const CACHE_NAME = "zhouyong-poetry-v1.5.4";
 const ASSETS_TO_CACHE = [
   "./",
   "./manifest.json",
@@ -54,6 +54,16 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
+
+  // 0. 绝不拦截安卓安装包、压缩包、快捷方式及资产校验文件，确保原生直连下载
+  if (
+    url.pathname.endsWith(".apk") || 
+    url.pathname.endsWith(".aab") || 
+    url.pathname.endsWith(".url") ||
+    url.pathname.includes(".well-known")
+  ) {
+    return; // 浏览器原生发起直接下载，绝不拦截重定向至首页！
+  }
 
   // 1. 处理页面导航请求 (PWA桌面启动、浏览器回车、普通Reload刷新、路由切换)
   if (event.request.mode === "navigate") {

@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>《周庸诗集》一键安装</title>
+
+  <!-- PWA 配置文件与图标 -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" sizes="192x192" href="assets/icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icons/icon-512.png">
   <style>
     :root {
       --bg-color: #F8F5EC;
@@ -301,6 +307,10 @@
       e.preventDefault();
       deferredPrompt = e;
     });
+
+    if ("serviceWorker" in navigator && (window.location.protocol === "https:" || window.location.hostname === "localhost")) {
+      navigator.serviceWorker.register("./sw.js").catch(() => {});
+    }
 
     const wechatMask = document.getElementById("wechatMask");
     wechatMask.onclick = () => { wechatMask.style.display = "none"; };

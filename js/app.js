@@ -7,7 +7,7 @@
 
 (function () {
   // 全集版本与编校日期（全站单一真实来源）
-  const APP_VERSION = "v1.5.3";
+  const APP_VERSION = "v1.5.4";
   const EDITION_DATE = "2026-09-10";
 
   // 全局应用状态
@@ -866,7 +866,7 @@ ${volSections}
   }
 
   /**
-   * PWA 桌面/移动端安装引导与事件捕获 (去横幅干扰 · 纯净直接唤起)
+   * PWA 桌面/移动端安装引导与事件捕获 (手势驱动 · 稳健可靠)
    */
   let deferredInstallPrompt = null;
 
@@ -879,52 +879,49 @@ ${volSections}
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       deferredInstallPrompt = e;
-      console.log("捕获到 PWA beforeinstallprompt 事件");
+      console.log("PWA 捕获到 beforeinstallprompt 事件");
 
-      if (isMobileInstallReq || isPCInstallReq) {
-        // 如果是从安装单页跳转而来，立即唤起原生系统级安装确认！
-        setTimeout(() => {
-          triggerNativeInstall(isPCInstallReq);
-        }, 500);
+      // 如果当前弹窗已处于打开状态，为弹窗内的安装主按钮启用直接调起
+      const modalActionBtn = document.getElementById("btnModalTriggerInstall");
+      if (modalActionBtn) {
+        modalActionBtn.onclick = () => {
+          triggerPromptFromGesture();
+        };
       }
     });
 
-    // 监听安装完成
+    // 监听安装完成事件
     window.addEventListener("appinstalled", () => {
-      console.log("《周庸诗集》已成功安装至本地桌面");
+      console.log("《周庸诗集》已成功安装至桌面");
       deferredInstallPrompt = null;
       const modal = document.querySelector(".pwa-help-modal");
       if (modal) modal.remove();
     });
 
-    // 若从 ?install=1 进入，但在 1500ms 内未捕获到原生 prompt（国产安卓ROM限制、Edge菜单置灰等），弹出兜底卡片
-    if (isMobileInstallReq) {
+    // 若携带安装参数进入，立即弹出雅致安装卡片，供用户点击直接唤起系统弹窗或极速下载
+    if (isMobileInstallReq || isPCInstallReq) {
       setTimeout(() => {
-        if (!deferredInstallPrompt) {
-          showInstallHelpModal(false);
-        }
-      }, 1500);
-    } else if (isPCInstallReq) {
-      // 若从 ?install=pc 进入，1500ms 内未调起系统弹窗，弹出电脑端专用指引卡片
-      setTimeout(() => {
-        if (!deferredInstallPrompt) {
-          showInstallHelpModal(true);
-        }
-      }, 1500);
+        showInstallHelpModal(isPCInstallReq);
+      }, 350);
     }
   }
 
-  function triggerNativeInstall(isPC = false) {
+  function triggerPromptFromGesture() {
     if (deferredInstallPrompt) {
       deferredInstallPrompt.prompt();
-      deferredInstallPrompt.userChoice.then((choiceResult) => {
-        if (choiceResult.outcome === "accepted") {
-          console.log("用户已同意安装诗集应用");
+      deferredInstallPrompt.userChoice.then((res) => {
+        if (res.outcome === "accepted") {
+          console.log("用户同意安装");
+          const modal = document.querySelector(".pwa-help-modal");
+          if (modal) modal.remove();
         }
         deferredInstallPrompt = null;
+      }).catch(err => {
+        console.warn("Prompt error:", err);
       });
     } else {
-      showInstallHelpModal(isPC);
+      const tip = document.getElementById("pwaInstallFallbackTip");
+      if (tip) tip.style.display = "block";
     }
   }
 
@@ -937,21 +934,25 @@ ${volSections}
 
     const titleText = isPC ? "安装到电脑桌面" : "添加到手机桌面";
     const descText = isPC 
-      ? "为方便以大屏舒心品读，推荐将《周庸诗集》作为独立应用安装至电脑桌面："
-      : "为方便周庸先生及亲友随时以大字翻阅诗卷，建议将诗馆添加至桌面快捷访问：";
+      ? "为方便以电脑大屏舒心品读，推荐将《周庸诗集》作为独立应用安装至桌面："
+      : "为方便周庸先生及亲友随时以大字翻阅诗卷，建议将诗馆添加至桌面随时品读：";
 
-    let stepsHtml = "";
+    let contentHtml = "";
     if (isPC) {
-      stepsHtml = `
-        <div class="pwa-help-steps">
+      contentHtml = `
+        <button id="btnModalTriggerInstall" class="pwa-install-action-btn">
+          <span>🖥️</span> <span>立即安装到电脑桌面</span>
+        </button>
+        <div id="pwaInstallFallbackTip" class="pwa-help-steps" style="margin-top:14px;">
+          <div style="font-weight:bold; color:var(--vermilion); margin-bottom:6px;">浏览器快捷安装指引：</div>
           <div>① 请查看当前 Edge 或 Chrome 浏览器顶部的<strong>地址栏最右侧</strong>；</div>
           <div>② 点击带有小电脑或加号的【<strong>安装应用 ⊞</strong>】图标；</div>
           <div>③ 在弹出的确认框中点击【<strong>安装</strong>】，即可生成电脑桌面专属应用！</div>
-          <div style="font-size:12.5px; color:var(--text-muted); margin-top:6px;">（安装后将拥有专属独立窗口与水墨印章图标，无地址栏干扰）</div>
+          <div style="font-size:12.5px; color:var(--text-muted); margin-top:6px;">（安装后将拥有专属独立大窗口与水墨印章图标，无地址栏干扰）</div>
         </div>
       `;
     } else if (isIOS) {
-      stepsHtml = `
+      contentHtml = `
         <div class="pwa-help-steps">
           <div>① 点击 Safari 浏览器底部的【<strong>分享 ⎋</strong>】图标；</div>
           <div>② 在弹出面板向上滑动，找到并选择【<strong>添加到主屏幕</strong>】；</div>
@@ -959,12 +960,15 @@ ${volSections}
         </div>
       `;
     } else {
-      stepsHtml = `
-        <a href="ZhouYongPoetry.apk" class="pwa-apk-highlight" download="周庸诗集.apk">
-          📦 点击直接下载安卓一键安装包 (.apk)
+      contentHtml = `
+        <button id="btnModalTriggerInstall" class="pwa-install-action-btn">
+          <span>📱</span> <span>立即安装到手机桌面</span>
+        </button>
+        <a href="ZhouYongPoetry.apk" class="pwa-apk-sub-btn" download="周庸诗集.apk">
+          <span>📦</span> <span>直接下载安卓安装包 (.apk)</span>
         </a>
-        <div class="pwa-help-steps" style="margin-top:12px;">
-          <div style="font-size:13px; color:var(--text-muted); margin-bottom:6px;">若需直接通过浏览器添加：</div>
+        <div id="pwaInstallFallbackTip" class="pwa-help-steps" style="display:none; margin-top:8px;">
+          <div style="font-size:13px; color:var(--text-muted); margin-bottom:6px;">若系统未弹出确认框，可点击浏览器菜单添加：</div>
           <div>① 点击浏览器右上角或底部的菜单【<strong>···</strong>】；</div>
           <div>② 选择【<strong>添加到主屏幕</strong>】或【<strong>安装应用</strong>】；</div>
           <div style="font-size:12.5px; color:var(--text-muted); margin-top:4px;">（注：若浏览器菜单呈灰色不可点，推荐直接点击上方按钮下载 APK 安装包）</div>
@@ -976,11 +980,18 @@ ${volSections}
       <div class="pwa-help-card">
         <div class="pwa-help-title">${titleText}</div>
         <div class="pwa-help-desc">${descText}</div>
-        ${stepsHtml}
-        <button class="pwa-help-close-btn" id="pwaHelpCloseBtn">我知道了 · 进入诗卷</button>
+        ${contentHtml}
+        <button class="pwa-help-close-btn" id="pwaHelpCloseBtn" style="margin-top:6px;">我知道了 · 进入诗卷</button>
       </div>
     `;
     document.body.appendChild(modal);
+
+    const triggerBtn = document.getElementById("btnModalTriggerInstall");
+    if (triggerBtn) {
+      triggerBtn.addEventListener("click", () => {
+        triggerPromptFromGesture();
+      });
+    }
 
     const closeBtn = document.getElementById("pwaHelpCloseBtn");
     if (closeBtn) {
