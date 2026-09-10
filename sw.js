@@ -3,7 +3,7 @@
  * 确保海内外读者及老先生在断网/离线环境下依然可极速加载全部诗卷
  */
 
-const CACHE_NAME = "zhouyong-poetry-v1.5.1";
+const CACHE_NAME = "zhouyong-poetry-v1.5.2";
 const ASSETS_TO_CACHE = [
   "./",
   "./manifest.json",
@@ -15,6 +15,8 @@ const ASSETS_TO_CACHE = [
   "./js/app.js",
   "./data/volumes.json",
   "./data/poems.json",
+  "./assets/icons/icon-192.png",
+  "./assets/icons/icon-512.png",
   "./assets/icons/icon-192.svg"
 ];
 

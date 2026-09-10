@@ -264,7 +264,7 @@
       </button>
 
       <!-- 安卓 APK 直载备用 -->
-      <a id="btnDownloadApk" href="ZhouYongPoetry.apk" class="btn-apk-sub" download="周庸诗集.apk">
+      <a id="btnDownloadApk" href="https://zhouyong-poetry.zhouyongshiji.workers.dev/ZhouYongPoetry.apk" class="btn-apk-sub" download="周庸诗集.apk">
         <span>📦</span> <span>直接下载安卓安装包 (.apk)</span>
       </a>
 
@@ -337,8 +337,8 @@
           deferredPrompt = null;
         });
       } else {
-        // 跳转主站
-        window.location.href = LIVE_URL;
+        // 跳转主站并携带 ?install=1 触发自动安装或浮条
+        window.location.href = LIVE_URL + "?install=1";
       }
     };
 

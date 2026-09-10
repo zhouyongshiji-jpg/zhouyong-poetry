@@ -922,3 +922,180 @@ body.font-xlarge .poem-nav-genre {
   }
 }
 
+/* ==========================================================================
+   PWA 桌面/手机一键安装引导与浮条
+   ========================================================================== */
+.pwa-install-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: var(--bg-card);
+  border-bottom: 1.5px solid var(--border-color);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  animation: slideDown 0.35s cubic-bezier(0.2, 0, 0, 1);
+  font-family: var(--font-kaiti);
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+
+.pwa-install-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  color: var(--text-primary);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.pwa-install-btns {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pwa-btn-install {
+  background: var(--vermilion);
+  color: #FFF;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-family: var(--font-kaiti);
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(184, 59, 46, 0.3);
+  transition: var(--transition-smooth);
+}
+
+.pwa-btn-install:hover {
+  background: var(--vermilion-soft);
+  transform: translateY(-1px);
+}
+
+.pwa-btn-apk {
+  background: var(--vermilion-light);
+  color: var(--vermilion);
+  border: 1px solid rgba(184, 59, 46, 0.3);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-family: var(--font-kaiti);
+  font-size: 13px;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.pwa-btn-apk:hover {
+  background: #F8E0DC;
+}
+
+.pwa-btn-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+}
+
+/* PWA 安装帮助弹窗 (适老长辈专属) */
+.pwa-help-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(30, 26, 22, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.pwa-help-card {
+  background: var(--bg-card);
+  border: 2px solid var(--border-color);
+  border-radius: 16px;
+  max-width: 460px;
+  width: 100%;
+  padding: 30px 24px 24px;
+  box-shadow: var(--shadow-float);
+  position: relative;
+  text-align: center;
+  font-family: var(--font-kaiti);
+}
+
+.pwa-help-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+.pwa-help-desc {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.pwa-help-steps {
+  background: var(--bg-secondary);
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 14.5px;
+  line-height: 1.8;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.pwa-help-steps strong {
+  color: var(--vermilion);
+}
+
+.pwa-apk-highlight {
+  display: block;
+  background: var(--vermilion);
+  color: #FFF !important;
+  text-decoration: none;
+  padding: 12px 20px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 14px rgba(184, 59, 46, 0.35);
+  margin-bottom: 12px;
+  transition: var(--transition-smooth);
+}
+
+.pwa-apk-highlight:hover {
+  background: var(--vermilion-soft);
+  transform: translateY(-1px);
+}
+
+.pwa-help-close-btn {
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 8px 24px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: var(--font-kaiti);
+}
+
