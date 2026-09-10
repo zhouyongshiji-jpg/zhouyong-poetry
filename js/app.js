@@ -7,7 +7,7 @@
 
 (function () {
   // 全集版本与编校日期（全站单一真实来源）
-  const APP_VERSION = "v1.5.4";
+  const APP_VERSION = "v1.5.5";
   const EDITION_DATE = "2026-09-10";
 
   // 全局应用状态
@@ -73,9 +73,10 @@
       // 卷目导航列表
       volumesNavList: document.getElementById("volumesNavList"),
 
-      // 全帙志与微信文案
+      // 全帙志与桌面安装
       btnHeaderChronicle: document.getElementById("btnHeaderChronicle"),
       btnTocChronicle: document.getElementById("btnTocChronicle"),
+      btnTocInstallApp: document.getElementById("btnTocInstallApp"),
       chronicleModal: document.getElementById("chronicleModal"),
       chronicleContentArea: document.getElementById("chronicleContentArea"),
       btnCloseChronicleModal: document.getElementById("btnCloseChronicleModal"),
@@ -664,6 +665,14 @@
     if (el.btnTocChronicle) el.btnTocChronicle.onclick = () => {
       closeSidebar();
       openChronicleModal();
+    };
+    // 目录抽屉内“典藏诗卷至桌面（手机/电脑）”
+    if (el.btnTocInstallApp) {
+      el.btnTocInstallApp.onclick = () => {
+        closeSidebar();
+        const isMobile = /mobile|android|iphone|ipad|phone/.test(navigator.userAgent.toLowerCase());
+        showInstallHelpModal(!isMobile);
+      };
     };
     if (el.btnCloseChronicleModal) el.btnCloseChronicleModal.onclick = closeChronicleModal;
     if (el.btnCloseChronicleBottom) el.btnCloseChronicleBottom.onclick = closeChronicleModal;

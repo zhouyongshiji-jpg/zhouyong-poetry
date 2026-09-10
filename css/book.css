@@ -660,6 +660,18 @@ body.font-xlarge .mode-vertical .poem-page-content {
   border-color: var(--vermilion);
 }
 
+.toc-install-btn {
+  margin-top: -6px;
+  background: rgba(197, 160, 89, 0.12);
+  border: 1px solid rgba(197, 160, 89, 0.4);
+  color: var(--gold-accent);
+}
+
+.toc-install-btn:hover {
+  background: rgba(197, 160, 89, 0.22);
+  border-color: var(--gold-accent);
+}
+
 .modal-chronicle-dialog {
   max-width: 760px;
   width: 95%;
