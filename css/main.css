@@ -425,6 +425,26 @@ body {
   border-radius: 2px;
 }
 
+.sidebar-part-header {
+  font-size: calc(var(--font-size-base) * 0.82);
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  color: var(--vermilion);
+  padding: 14px 8px 6px 8px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  border-bottom: 1px dashed var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-kaiti), var(--font-serif);
+}
+
+.sidebar-part-header:first-child {
+  margin-top: 0;
+  padding-top: 4px;
+}
+
 .volume-group {
   margin-bottom: 10px;
   border-radius: 6px;

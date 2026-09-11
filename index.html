@@ -20,8 +20,8 @@
   <link rel="icon" type="image/svg+xml" href="assets/icons/icon-192.svg">
 
   <!-- 样式表 (添加版本戳击穿强缓存) -->
-  <link rel="stylesheet" href="css/main.css?v=1.6.0">
-  <link rel="stylesheet" href="css/book.css?v=1.6.0">
+  <link rel="stylesheet" href="css/main.css?v=1.7.0">
+  <link rel="stylesheet" href="css/book.css?v=1.7.0">
 </head>
 <body class="font-standard">
 
@@ -67,7 +67,7 @@
           </button>
 
           <!-- 查看诗集全帙志 -->
-          <button id="btnHeaderChronicle" class="btn-icon" title="查看诗集全帙志与五卷概览" aria-label="全集志">
+          <button id="btnHeaderChronicle" class="btn-icon" title="查看诗集全帙志与两编卷帙概览" aria-label="全集志">
             📜
           </button>
 
@@ -84,15 +84,15 @@
 
     <!-- 主体布局 -->
     <main class="main-layout">
-      <!-- 卷次目录抽屉 -->
+      <!-- 侧边目录抽屉 (卷次与诗目) -->
       <aside id="sidebarToc" class="sidebar-toc">
         <div class="toc-header">
-          <div class="toc-title">诗集卷目</div>
-          <button id="btnCloseToc" class="btn-icon mobile-only" style="width: 32px; height: 32px; font-size: 14px;" aria-label="关闭目录">✕</button>
+          <div class="toc-title">卷帙目录</div>
+          <button id="btnCloseToc" class="btn-icon btn-close-toc mobile-only" aria-label="关闭目录">✕</button>
         </div>
-        <!-- 全帙总览入口 -->
-        <div id="btnTocChronicle" class="toc-chronicle-btn" title="查看全帙编年大纲与全卷纵览">
-          <span>📜</span> <span>《一个人的诗经》全帙志（五卷全览）</span>
+        <!-- 全集概览入口 -->
+        <div id="btnTocChronicle" class="toc-chronicle-btn" title="查看全集编年全帙志">
+          <span>📜</span> <span>《一个人的诗经》全帙志（两编全览）</span>
         </div>
         <!-- 典藏至桌面入口 (支持手机PWA、安卓APK与电脑大屏桌面安装) -->
         <button id="btnTocInstallApp" class="toc-chronicle-btn toc-install-btn" onclick="window.openInstallModal &amp;&amp; window.openInstallModal()" title="将诗馆典藏安装至手机桌面、下载安卓APK或电脑独立应用">
@@ -204,7 +204,7 @@
     <div class="modal-card-dialog modal-chronicle-dialog">
       <div class="modal-header">
         <div class="modal-title">
-          <span>📜</span> <span>《一个人的诗经》全帙志（卷帙全览）</span>
+          <span>📜</span> <span>《一个人的诗经》全帙志（两编全览）</span>
         </div>
         <button id="btnCloseChronicleModal" class="modal-close-btn" aria-label="关闭">✕</button>
       </div>
@@ -296,9 +296,9 @@
   </script>
 
   <!-- 脚本引入 (附带版本戳击穿强缓存，按依赖严格排序) -->
-  <script src="js/seal.js?v=1.6.0"></script>
-  <script src="js/search.js?v=1.6.0"></script>
-  <script src="js/card-exporter.js?v=1.6.0"></script>
-  <script src="js/app.js?v=1.6.0"></script>
+  <script src="js/seal.js?v=1.7.0"></script>
+  <script src="js/search.js?v=1.7.0"></script>
+  <script src="js/card-exporter.js?v=1.7.0"></script>
+  <script src="js/app.js?v=1.7.0"></script>
 </body>
 </html>

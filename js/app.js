@@ -7,7 +7,7 @@
 
 (function () {
   // 全集版本与编校日期（全站单一真实来源）
-  const APP_VERSION = "v1.6.0";
+  const APP_VERSION = "v1.7.0";
   const EDITION_DATE = "2026-09-11";
 
   // 全局应用状态
@@ -232,8 +232,18 @@
     el.volumesNavList.innerHTML = "";
 
     const currentPoem = state.poems[state.currentPoemIndex];
+    let lastPart = null;
 
     state.volumes.forEach((vol, volIndex) => {
+      // 渲染大编分割标（前编·行吟岁月 / 续编·晚晴沧桑）
+      if (vol.part && vol.part !== lastPart) {
+        lastPart = vol.part;
+        const partDivider = document.createElement("div");
+        partDivider.className = "sidebar-part-header";
+        partDivider.innerHTML = `<span class="part-icon">📖</span><span class="part-title">${vol.part}</span>`;
+        el.volumesNavList.appendChild(partDivider);
+      }
+
       const volPoems = state.poems.filter(p => p.volumeId === vol.id || p.volume.includes(vol.name.slice(0, 4)));
       
       const volGroup = document.createElement("details");
@@ -738,10 +748,21 @@
   function renderChronicleContent() {
     if (!el.chronicleContentArea) return;
 
-    // 动态生成五卷卡片
+    // 动态生成两编卷目卡片
+    let lastPart = null;
     const volCardsHtml = state.volumes.map((vol, idx) => {
       const volPoems = state.poems.filter(p => p.volumeId === vol.id);
+      let partHeaderHtml = "";
+      if (vol.part && vol.part !== lastPart) {
+        lastPart = vol.part;
+        partHeaderHtml = `
+          <div class="chronicle-part-divider" style="margin: 20px 0 12px 0; padding: 8px 14px; background: rgba(184, 59, 46, 0.08); border-left: 4px solid var(--vermilion); border-radius: 4px; font-weight: bold; color: var(--vermilion); font-size: 15px; font-family: var(--font-kaiti);">
+            📖 ${vol.part}
+          </div>
+        `;
+      }
       return `
+        ${partHeaderHtml}
         <div class="chronicle-vol-card">
           <div class="chronicle-vol-top">
             <span class="chronicle-vol-name">${vol.name}</span>
@@ -798,9 +819,15 @@
     const totalCount = state.poems.length;
     const volCount = state.volumes.length;
 
+    let lastPart = null;
     const volSections = state.volumes.map(vol => {
       const volPoems = state.poems.filter(p => p.volumeId === vol.id || p.volume.includes(vol.name.slice(0, 4)));
-      return `◈【${vol.name}】\n▫ 篇数：共 ${volPoems.length} 首\n▫ 时段：${vol.period || '不详'}\n▫ 概述：${vol.description || ''}`;
+      let partPrefix = "";
+      if (vol.part && vol.part !== lastPart) {
+        lastPart = vol.part;
+        partPrefix = `\n【📖 ${vol.part}】\n───────────────────\n`;
+      }
+      return `${partPrefix}◈【${vol.name}】\n▫ 篇数：共 ${volPoems.length} 首\n▫ 时段：${vol.period || '不详'}\n▫ 概述：${vol.description || ''}`;
     }).join("\n\n");
 
     const text = `周老先生展信安好！

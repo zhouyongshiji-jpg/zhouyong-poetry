@@ -2,3 +2,5 @@
 CREDENTIALS_BACKUP.md
 *credential*
 .system_generated/
+# 本地源手稿文档（不纳入公开仓库）
+*.docx
