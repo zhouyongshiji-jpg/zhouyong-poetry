@@ -99,7 +99,7 @@ const CardExporter = (function () {
     ctx.font = 'bold 22px "Noto Serif SC", "Songti SC", "SimSun", serif';
     ctx.textAlign = "center";
     ctx.letterSpacing = "3px";
-    const volumeText = `《周庸诗集》· ${currentPoem.volume || "吟草"}`;
+    const volumeText = `《一个人的诗经》· 周庸 · ${currentPoem.volume || "吟草"}`;
     ctx.fillText(volumeText, width / 2, m + 46);
 
     // 4. 诗题
@@ -200,7 +200,7 @@ const CardExporter = (function () {
     ctx.font = '14px "Noto Serif SC", "Songti SC", sans-serif';
     ctx.textAlign = "center";
     ctx.letterSpacing = "1.5px";
-    ctx.fillText("《周庸诗集》数字诗馆 · 亲友雅玩珍藏", width / 2, height - m - 20);
+    ctx.fillText("《一个人的诗经》（作者：周庸）· 亲友门生雅玩珍藏", width / 2, height - m - 20);
 
     // 导出 DataURL
     const dataUrl = canvas.toDataURL("image/png");
@@ -209,7 +209,7 @@ const CardExporter = (function () {
     if (downloadBtn) {
       downloadBtn.onclick = () => {
         const link = document.createElement("a");
-        link.download = `周庸诗词_${currentPoem.title}.png`;
+        link.download = `一个人的诗经_周庸_${currentPoem.title}.png`;
         link.href = dataUrl;
         link.click();
       };

@@ -7,8 +7,8 @@
 
 (function () {
   // 全集版本与编校日期（全站单一真实来源）
-  const APP_VERSION = "v1.5.6";
-  const EDITION_DATE = "2026-09-10";
+  const APP_VERSION = "v1.6.0";
+  const EDITION_DATE = "2026-09-11";
 
   // 全局应用状态
   const state = {
@@ -761,7 +761,7 @@
 
     el.chronicleContentArea.innerHTML = `
       <div class="chronicle-header-box">
-        <h3 class="chronicle-title">《周庸诗集》全帙编年纲要</h3>
+        <h3 class="chronicle-title">《一个人的诗经》全帙编年纲要</h3>
         <div class="chronicle-stats">
           <span>周庸 先生 著</span> · 
           <span>100% 纯真迹 ${state.volumes.length} 大卷</span> · 
@@ -812,7 +812,7 @@ https://zhouyong-poetry.zhouyongshiji.workers.dev
 （电脑与手机直接点击即可秒开；若微信提示受限，点右上角“…”选择“在浏览器中打开”）
 
 ━━━━━━━━━━━━━━━
-📜 《周庸诗集》${volCount}大卷编年概览
+📜 《一个人的诗经》（周庸 著）${volCount}大卷编年概览
 ━━━━━━━━━━━━━━━
 
 ${volSections}
