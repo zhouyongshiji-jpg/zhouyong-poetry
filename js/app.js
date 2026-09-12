@@ -7,8 +7,8 @@
 
 (function () {
   // 全集版本与编校日期（全站单一真实来源）
-  const APP_VERSION = "v1.7.0";
-  const EDITION_DATE = "2026-09-11";
+  const APP_VERSION = "v1.8.0";
+  const EDITION_DATE = "2026-09-12";
 
   // 全局应用状态
   const state = {
@@ -610,9 +610,20 @@
         if (window.CardExporter) window.CardExporter.closeCardModal();
         return;
       }
-      if (document.activeElement === el.searchInput) return;
       if (e.key === "ArrowLeft") navigateToPoem(state.currentPoemIndex - 1);
       if (e.key === "ArrowRight") navigateToPoem(state.currentPoemIndex + 1);
+    });
+
+    // 监听 Hash 变化（支持浏览器后退/前进与外部深度链接即时切换）
+    window.addEventListener("hashchange", () => {
+      const hash = window.location.hash;
+      if (hash.startsWith("#/poem/")) {
+        const targetId = hash.replace(/^#\/poem\//, "").split(/[?#&]/)[0].replace(/\/+$/, "");
+        const targetIdx = state.poems.findIndex(p => p.id === targetId);
+        if (targetIdx !== -1 && targetIdx !== state.currentPoemIndex) {
+          navigateToPoem(targetIdx);
+        }
+      }
     });
 
     // 朗读
