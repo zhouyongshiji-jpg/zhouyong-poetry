@@ -394,7 +394,7 @@
           <div class="poem-meta-header">
             <div class="poem-meta-top-row">
               <div class="poem-volume-tag">${poem.volume || "集外诗选"} · 第 ${inVolNum} 首</div>
-              <div class="poem-global-id" title="全集唯一典藏编号">〔全帙 ${globalNum}〕</div>
+              <div class="poem-global-id" title="全集唯一典藏编号">〔全帙&nbsp;${globalNum}〕</div>
             </div>
             <h2 class="poem-title">${poem.title}</h2>
             ${poem.subtitle ? `<div class="poem-subtitle">${poem.subtitle}</div>` : ""}
