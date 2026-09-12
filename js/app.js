@@ -198,8 +198,8 @@
 
     if (el.btnToggleLayout) {
       el.btnToggleLayout.innerHTML = mode === "vertical" 
-        ? `<span class="icon">📑</span><span>改横排</span>`
-        : `<span class="icon">📜</span><span>改竖排</span>`;
+        ? `<span class="icon">📑</span><span>横排</span>`
+        : `<span class="icon">📜</span><span>竖排</span>`;
     }
 
     if (save) {
@@ -816,7 +816,7 @@
         <div style="font-weight: bold; color: var(--text-primary); margin-bottom: 8px;">📱 掌上数字诗馆适老与分享特色：</div>
         <ul style="padding-left: 20px; line-height: 1.8;">
           <li><strong>大字护眼</strong>：点击右上角「大字」或「特大」，字大如盘，久读不累。</li>
-          <li><strong>改换竖排</strong>：点击「改竖排」重现宣纸古籍线装神韵，自右向左自然翻阅。</li>
+          <li><strong>古籍竖排</strong>：点击「竖排」重现宣纸古籍线装神韵，自右向左自然翻阅。</li>
           <li><strong>闭目听诗</strong>：点击「听诗」自动以舒缓语调朗诵诗作，视力疲劳时可静心聆听。</li>
           <li><strong>生成雅卡</strong>：点击「生成雅卡」一键输出 2x 高清宣纸美图，方便长按发送朋友圈或 LINE。</li>
           <li><strong>即打即搜</strong>：支持诗句全文、地名、年份及拼音首字母即时极速检索。</li>
@@ -866,7 +866,7 @@ ${volSections}
 ⚙️ 掌上诗馆贴心功能提示
 ━━━━━━━━━━━━━━━
 ▪ 大字护眼：顶部可随时点「大字」或「特大」，大字如盘，久读不累。
-▪ 改换竖排：点「改竖排」即转为古典宣纸线装书，自右向左自然翻阅。
+▪ 古籍竖排：点「竖排」即转为古典宣纸线装书，自右向左自然翻阅。
 ▪ 闭目听诗：点「听诗」有舒缓诵读，疲劳时可闭目静听。
 ▪ 制作雅卡：每首诗点「生成雅卡」，一键存入手机相册，方便发朋友圈或LINE。
 ▪ 飞速检索：上方输入任意字词或拼音首字母，瞬间找到对应篇目。
