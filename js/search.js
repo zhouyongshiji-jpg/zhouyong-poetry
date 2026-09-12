@@ -44,7 +44,13 @@ const PoetrySearch = (function () {
    * 初始化诗库索引
    */
   function buildIndex(poems) {
-    indexData = poems.map(poem => {
+    const volCounters = {};
+    indexData = poems.map((poem, idx) => {
+      const volKey = poem.volumeId || poem.volume || "default";
+      volCounters[volKey] = (volCounters[volKey] || 0) + 1;
+      const inVolIndex = volCounters[volKey];
+      const globalIndex = idx + 1;
+
       const fullContent = (poem.content || []).join(" ");
       const fullNotes = (poem.notes || []).join(" ");
       const fullTags = (poem.tags || []).join(" ");
@@ -67,6 +73,8 @@ const PoetrySearch = (function () {
 
       return {
         poem,
+        globalIndex,
+        inVolIndex,
         normalized,
         titleNorm: normalizeText(poem.title),
         contentNorm: normalizeText(fullContent),
@@ -90,7 +98,7 @@ const PoetrySearch = (function () {
   }
 
   /**
-   * 执行即打即搜
+   * 执行即打即搜 (支持诗名、字句、拼音及全集/卷内纯数字秒搜)
    * @param {string} rawQuery 检索词
    * @returns {Array} 匹配的诗作列表，附带高亮片段
    */
@@ -99,6 +107,13 @@ const PoetrySearch = (function () {
       return indexData.map(item => ({ poem: item.poem, matchedSnippet: "" }));
     }
 
+    const trimmed = rawQuery.trim();
+    const isPureNumber = /^\d+$/.test(trimmed);
+    const numValue = isPureNumber ? parseInt(trimmed, 10) : null;
+    const isZyId = /^zy[-_]?(\d+)$/i.test(trimmed);
+    const zyNum = isZyId ? parseInt(trimmed.match(/^zy[-_]?(\d+)$/i)[1], 10) : null;
+    const targetGlobalNum = numValue || zyNum;
+
     const query = normalizeText(rawQuery);
     const results = [];
 
@@ -106,41 +121,51 @@ const PoetrySearch = (function () {
       let score = 0;
       let snippet = "";
 
-      // 1. 标题完全包含匹配 (最高优先级)
+      // 0. 全帙唯一定位数字秒达 (超级特权，最高优先级 500)
+      if (targetGlobalNum && item.globalIndex === targetGlobalNum) {
+        score += 500;
+        snippet = `🎯 <strong style="color:var(--vermilion);">全帙第 ${item.globalIndex} 首</strong> · ${item.poem.volume} 第 ${item.inVolIndex} 首`;
+      }
+      // 0.1 卷内序号数字秒查 (次高特权 120)
+      else if (numValue && item.inVolIndex === numValue && numValue <= 200) {
+        score += 120;
+        snippet = `📖 <strong>${item.poem.volume} · 第 ${item.inVolIndex} 首</strong> (全帙第 ${item.globalIndex} 首)`;
+      }
+
+      // 1. 标题完全包含匹配 (最高文本优先级)
       if (item.titleNorm.includes(query)) {
         score += 100;
-        snippet = highlight(item.poem.title, query);
+        snippet = snippet || highlight(item.poem.title, query);
       }
       // 2. 诗句正文命中
       else if (item.contentNorm.includes(query)) {
         score += 60;
-        // 提取命中的诗句并高亮
         const matchedLine = item.poem.content.find(line => 
           normalizeText(line).includes(query)
         );
         if (matchedLine) {
-          snippet = highlight(matchedLine, query);
+          snippet = snippet || highlight(matchedLine, query);
         }
       }
       // 3. 序言命中
       else if (item.poem.preface && normalizeText(item.poem.preface).includes(query)) {
         score += 40;
-        snippet = highlight(item.poem.preface, query);
+        snippet = snippet || highlight(item.poem.preface, query);
       }
       // 4. 地点或年代命中
       else if (item.locationNorm.includes(query) || item.year.includes(query)) {
         score += 30;
-        snippet = `${item.poem.year}年 · ${item.poem.location}`;
+        snippet = snippet || `${item.poem.year}年 · ${item.poem.location}`;
       }
       // 5. 标签或体裁命中
       else if (item.tagsNorm.includes(query)) {
         score += 20;
-        snippet = `标签：${item.poem.tags.join("、")}`;
+        snippet = snippet || `标签：${item.poem.tags.join("、")}`;
       }
       // 6. 拼音首字母匹配
       else if (matchPinyinInitials(query, item.normalized)) {
         score += 50;
-        snippet = `拼音匹配：${item.poem.title}`;
+        snippet = snippet || `拼音匹配：${item.poem.title}`;
       }
 
       if (score > 0) {

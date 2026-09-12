@@ -243,6 +243,23 @@ body.font-xlarge .mode-vertical .poem-page-content {
   vertical-align: top;
   margin-left: 36px;
   height: 100%;
+.mode-vertical .poem-meta-top-row {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: top;
+  margin-left: 10px;
+}
+
+.mode-vertical .poem-global-id {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  opacity: 0.8;
+  margin-top: 10px;
+  white-space: nowrap;
 }
 
 .mode-vertical .poem-volume-tag {

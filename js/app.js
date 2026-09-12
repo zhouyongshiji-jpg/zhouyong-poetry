@@ -7,7 +7,7 @@
 
 (function () {
   // 全集版本与编校日期（全站单一真实来源）
-  const APP_VERSION = "v1.8.1";
+  const APP_VERSION = "v1.8.2";
   const EDITION_DATE = "2026-09-12";
 
   // 全局应用状态
@@ -263,9 +263,10 @@
           <span class="volume-badge">${volPoems.length} 首</span>
         </summary>
         <ul class="poem-list" id="list-${vol.id}">
-          ${volPoems.map(poem => `
+          ${volPoems.map((poem, pIdx) => `
             <li class="poem-nav-item ${state.poems[state.currentPoemIndex]?.id === poem.id ? "active" : ""}" 
                 data-poem-id="${poem.id}" title="${poem.title} (${poem.genre || ''})">
+              <span class="poem-nav-index">${String(pIdx + 1).padStart(2, "0")}</span>
               <span class="poem-nav-title">${poem.title}</span>
               <span class="poem-nav-genre">${poem.genre || ""}</span>
             </li>
@@ -305,11 +306,20 @@
       localStorage.setItem("zy_last_read_poem_id", poem.id);
     } catch (e) {}
 
-    // 更新翻页按钮状态
+    // 计算卷内序号与全帙编号
+    const currentVolId = poem.volumeId || poem.volume;
+    const volPoems = state.poems.filter(p => (p.volumeId && p.volumeId === currentVolId) || p.volume === poem.volume);
+    const inVolIdx = volPoems.findIndex(p => p.id === poem.id);
+    const inVolNum = inVolIdx !== -1 ? inVolIdx + 1 : 1;
+    const inVolTotal = volPoems.length || 1;
+    const globalNum = String(state.currentPoemIndex + 1).padStart(4, "0");
+
+    // 更新翻页按钮状态与纯净卷内进度 (绝不眩晕)
     if (el.btnPrevPoem) el.btnPrevPoem.disabled = state.currentPoemIndex === 0;
     if (el.btnNextPoem) el.btnNextPoem.disabled = state.currentPoemIndex === state.poems.length - 1;
     if (el.pageIndicator) {
-      el.pageIndicator.textContent = `${state.currentPoemIndex + 1} / ${state.poems.length}`;
+      el.pageIndicator.textContent = `${inVolNum} / ${inVolTotal}`;
+      el.pageIndicator.title = `本卷第 ${inVolNum} 首 / 共 ${inVolTotal} 首（全集第 ${state.currentPoemIndex + 1} 首）`;
     }
 
     // 更新侧边栏高亮与所属卷展开状态
@@ -382,7 +392,10 @@
         <div class="poem-page-content">
           <!-- 题头与属性 -->
           <div class="poem-meta-header">
-            <div class="poem-volume-tag">${poem.volume || "集外诗选"}</div>
+            <div class="poem-meta-top-row">
+              <div class="poem-volume-tag">${poem.volume || "集外诗选"} · 第 ${inVolNum} 首</div>
+              <div class="poem-global-id" title="全集唯一典藏编号">〔全帙 ${globalNum}〕</div>
+            </div>
             <h2 class="poem-title">${poem.title}</h2>
             ${poem.subtitle ? `<div class="poem-subtitle">${poem.subtitle}</div>` : ""}
             <div class="poem-submeta">
