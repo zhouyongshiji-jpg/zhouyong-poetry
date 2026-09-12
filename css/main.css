@@ -732,25 +732,6 @@ body.font-xlarge .poem-nav-genre {
   color: var(--vermilion);
 }
 
-/* 浮动适老快捷助手 (移动端底栏固定) */
-.mobile-senior-bar {
-  display: none;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(248, 245, 236, 0.98);
-  border-top: 2px solid var(--border-color);
-  padding: 8px 16px;
-  z-index: 99;
-  box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
-  justify-content: space-around;
-}
-
-[data-theme="dark"] .mobile-senior-bar {
-  background: rgba(28, 30, 32, 0.98);
-}
-
 /* 响应式断点适配 */
 @media (max-width: 960px) {
   .main-layout {
@@ -784,14 +765,6 @@ body.font-xlarge .poem-nav-genre {
   
   .sidebar-backdrop.show {
     display: block;
-  }
-
-  .mobile-senior-bar {
-    display: flex;
-  }
-  
-  .app-container {
-    padding-bottom: 60px;
   }
 }
 
@@ -832,12 +805,17 @@ body.font-xlarge .poem-nav-genre {
     order: 2;
     gap: 6px;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
   }
 
-  /* 顶部隐藏横竖和目录按钮（底栏已有专属大按钮） */
-  .header-actions #btnToggleLayout,
-  .header-actions #btnToggleToc {
-    display: none !important;
+  /* 顶栏横竖切换按钮保持显示并与字号组和谐并列 */
+  .header-actions #btnToggleLayout {
+    display: inline-flex !important;
+    padding: 3px 8px;
+    font-size: 12px;
+    min-height: 28px;
+    gap: 3px;
   }
 
   .senior-toolbar {
@@ -851,9 +829,9 @@ body.font-xlarge .poem-nav-genre {
   }
 
   .btn-icon {
-    width: 32px;
-    height: 32px;
-    font-size: 15px;
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
   }
 
   /* 检索框整行铺满 */
@@ -868,6 +846,47 @@ body.font-xlarge .poem-nav-genre {
     padding: 6px 32px 6px 14px;
     font-size: 14px;
     height: 36px;
+  }
+
+  /* 阅读控制条移动端专属紧凑美观布局 */
+  .reader-controls-bar {
+    padding: 8px 10px;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .nav-buttons {
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .btn-nav-page {
+    padding: 5px 8px;
+    font-size: 12.5px;
+    min-height: 34px;
+    gap: 4px;
+  }
+
+  .btn-nav-toc {
+    background: var(--bg-hover);
+    font-weight: 500;
+    border-color: var(--gold-accent);
+  }
+
+  .action-buttons {
+    width: 100%;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .action-buttons .btn-action-pill {
+    flex: 1;
+    justify-content: center;
+    max-width: 160px;
+    font-size: 13px;
+    min-height: 36px;
   }
 }
 

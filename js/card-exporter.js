@@ -41,7 +41,7 @@ const CardExporter = (function () {
   }
 
   /**
-   * 高清 Canvas 绘制
+   * 高清 Canvas 绘制与智能自适应排版 (防文字截断与印章遮挡)
    */
   function renderCard() {
     if (!currentPoem) return;
@@ -50,16 +50,19 @@ const CardExporter = (function () {
     const downloadBtn = document.getElementById("btnDownloadCard");
     if (!previewImg) return;
 
-    // 基础尺寸定义 (2x 视网膜高清)
+    const m = 36; // 外边距
     let width = 800;
     let height = 1066; // 3:4 比例
 
+    const lines = currentPoem.content || [];
+    const lineCount = lines.length;
+
+    // 预估动态高度
     if (currentRatio === "square") {
       height = 800;
     } else if (currentRatio === "scroll") {
-      // 动态根据诗句长度计算高度
-      const lineCount = (currentPoem.content || []).length;
-      height = Math.max(1100, 700 + lineCount * 55);
+      // 动态根据诗句长度计算高度，长卷舒展到底
+      height = Math.max(1066, Math.round(520 + lineCount * 54));
     }
 
     const canvas = document.createElement("canvas");
@@ -71,15 +74,14 @@ const CardExporter = (function () {
     ctx.fillStyle = "#F8F4EA";
     ctx.fillRect(0, 0, width, height);
 
-    // 宣纸细腻杂质噪点与微渐变
+    // 宣纸温润渐变
     const paperGrad = ctx.createLinearGradient(0, 0, width, height);
-    paperGrad.addColorStop(0, "rgba(253, 251, 247, 0.95)");
-    paperGrad.addColorStop(1, "rgba(240, 234, 218, 0.9)");
+    paperGrad.addColorStop(0, "rgba(253, 251, 247, 0.96)");
+    paperGrad.addColorStop(1, "rgba(240, 234, 218, 0.92)");
     ctx.fillStyle = paperGrad;
     ctx.fillRect(0, 0, width, height);
 
     // 2. 绘制古典传统边框（外细内双，古籍开本规制）
-    const m = 36; // 边距
     ctx.strokeStyle = "#C4B89F";
     ctx.lineWidth = 2.5;
     ctx.strokeRect(m, m, width - m * 2, height - m * 2);
@@ -96,99 +98,212 @@ const CardExporter = (function () {
 
     // 3. 顶部卷目与诗集题标
     ctx.fillStyle = "#B83B2E";
-    ctx.font = 'bold 22px "Noto Serif SC", "Songti SC", "SimSun", serif';
+    ctx.font = 'bold 20px "Noto Serif SC", "Songti SC", "SimSun", serif';
     ctx.textAlign = "center";
-    ctx.letterSpacing = "3px";
+    ctx.letterSpacing = "2.5px";
     const volumeText = `《一个人的诗经》· 周庸 · ${currentPoem.volume || "吟草"}`;
-    ctx.fillText(volumeText, width / 2, m + 46);
+    ctx.fillText(volumeText, width / 2, m + 40);
 
-    // 4. 诗题
+    // 4. 诗题 (支持字号自适应与长诗题折行)
+    let titleFontSize = 36;
+    if (currentPoem.title.length > 18) {
+      titleFontSize = 24;
+    } else if (currentPoem.title.length > 12) {
+      titleFontSize = 28;
+    } else if (currentPoem.title.length > 8) {
+      titleFontSize = 32;
+    }
+    if (currentRatio === "square" && titleFontSize > 30) {
+      titleFontSize = 30;
+    }
+
     ctx.fillStyle = "#1F1E1B";
-    ctx.font = 'bold 38px "Noto Serif SC", "Songti SC", "STSong", serif';
-    ctx.letterSpacing = "4px";
-    ctx.fillText(currentPoem.title, width / 2, m + 105);
+    ctx.font = `bold ${titleFontSize}px "Noto Serif SC", "Songti SC", "STSong", serif`;
+    ctx.letterSpacing = "3px";
+
+    const titleLines = wrapText(ctx, currentPoem.title, width - m * 2 - 60);
+    let currentY = m + 82;
+    for (let t = 0; t < titleLines.length; t++) {
+      ctx.fillText(titleLines[t], width / 2, currentY);
+      currentY += titleFontSize + 8;
+    }
 
     // 副标题/曲牌（若有）
-    let currentY = m + 145;
     if (currentPoem.subtitle || currentPoem.tune) {
       ctx.fillStyle = "#5E584E";
-      ctx.font = 'normal 22px "Noto Serif SC", "KaiTi", serif';
+      const subFontSize = currentRatio === "square" ? 18 : 20;
+      ctx.font = `normal ${subFontSize}px "Noto Serif SC", "KaiTi", serif`;
+      ctx.letterSpacing = "2px";
       const sub = currentPoem.tune ? `【${currentPoem.tune}】` : currentPoem.subtitle;
-      ctx.fillText(sub, width / 2, currentY);
-      currentY += 38;
+      const subLines = wrapText(ctx, sub, width - m * 2 - 80);
+      for (const sLine of subLines) {
+        ctx.fillText(sLine, width / 2, currentY);
+        currentY += subFontSize + 6;
+      }
+      currentY += 4;
     }
 
     // 创作信息（年代·地点·体裁）
-    ctx.fillStyle = "#877E71";
-    ctx.font = 'normal 18px "Noto Serif SC", "Songti SC", serif';
     const metaParts = [];
     if (currentPoem.year) metaParts.push(`${currentPoem.year}年`);
     if (currentPoem.location) metaParts.push(currentPoem.location);
     if (currentPoem.genre) metaParts.push(currentPoem.genre);
-    ctx.fillText(metaParts.join(" · "), width / 2, currentY);
-    currentY += 30;
+    if (metaParts.length > 0) {
+      ctx.fillStyle = "#877E71";
+      ctx.font = 'normal 16px "Noto Serif SC", "Songti SC", serif';
+      ctx.letterSpacing = "1.5px";
+      ctx.fillText(metaParts.join(" · "), width / 2, currentY);
+      currentY += 24;
+    }
 
     // 细分割线
     ctx.strokeStyle = "#DDD2BE";
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(width / 2 - 80, currentY);
-    ctx.lineTo(width / 2 + 80, currentY);
+    ctx.moveTo(width / 2 - 70, currentY);
+    ctx.lineTo(width / 2 + 70, currentY);
     ctx.stroke();
-    currentY += 28;
+    currentY += 22;
 
-    // 5. 序言（若有）
-    if (currentPoem.preface && currentRatio !== "square") {
+    // 5. 序言/小引（若有）
+    if (currentPoem.preface) {
       ctx.fillStyle = "#6B6457";
-      ctx.font = 'italic 19px "KaiTi SC", "STKaiti", "KaiTi", serif';
+      const pFontSize = currentRatio === "square" ? 15 : 17;
+      ctx.font = `italic ${pFontSize}px "KaiTi SC", "STKaiti", "KaiTi", serif`;
+      ctx.letterSpacing = "1px";
       const prefaceLines = wrapText(ctx, `小引：${currentPoem.preface}`, width - 180);
-      for (const pLine of prefaceLines) {
-        ctx.fillText(pLine, width / 2, currentY);
-        currentY += 28;
+      const maxPLines = (currentRatio === "square" || lineCount > 16) ? 3 : prefaceLines.length;
+      for (let p = 0; p < Math.min(prefaceLines.length, maxPLines); p++) {
+        ctx.fillText(prefaceLines[p], width / 2, currentY);
+        currentY += pFontSize + 6;
       }
-      currentY += 16;
+      currentY += 10;
     }
 
-    // 6. 诗词正文
-    ctx.fillStyle = "#1B1A18";
-    ctx.font = '500 28px "Noto Serif SC", "Songti SC", serif';
-    ctx.letterSpacing = "4px";
+    // 6. 正文与落款可用垂直空间精算 (防溢出核心引擎)
+    const sealSize = currentRatio === "square" && lineCount > 12 ? 50 : 56;
+    const bottomReserved = m + 22 + sealSize + 16; // 底部留白（印章 + 周庸题 + 防伪题注 + 边距）
+    const maxContentY = height - bottomReserved;
+    let availableHeight = maxContentY - currentY;
 
-    const lines = currentPoem.content || [];
-    const lineHeight = lines.length > 8 ? 44 : 52;
-
-    // 垂直居中微调计算
-    const contentTotalHeight = lines.length * lineHeight;
-    const availableSpace = (height - m - 120) - currentY;
-    if (availableSpace > contentTotalHeight) {
-      currentY += (availableSpace - contentTotalHeight) / 3;
+    // 如果是 Scroll 模式且诗歌非常长，动态自适应高度重算
+    if (currentRatio === "scroll" && availableHeight < lineCount * 50) {
+      height = Math.round(currentY + lineCount * 52 + bottomReserved + 30);
+      canvas.height = height;
+      return renderCard();
     }
 
-    for (let i = 0; i < lines.length; i++) {
-      const lineText = lines[i];
-      if (lineText.startsWith("【其")) {
-        ctx.fillStyle = "#B83B2E";
-        ctx.font = 'bold 22px "KaiTi SC", "STKaiti", "KaiTi", serif';
-        ctx.fillText(lineText, width / 2, currentY);
-        currentY += lineHeight * 0.85;
-        ctx.fillStyle = "#1B1A18";
-        ctx.font = '500 28px "Noto Serif SC", "Songti SC", serif';
-      } else {
-        ctx.fillText(lineText, width / 2, currentY);
+    // 决定排版格式：单栏 vs 双栏古籍版式
+    // 判定规则：
+    // - 1:1 方形：行数 > 13 即启用古典双栏
+    // - 3:4 朋友圈比例：行数 > 22 即启用古典双栏
+    const useDualColumn = (currentRatio === "square" && lineCount > 13) ||
+                          (currentRatio === "3:4" && lineCount > 22);
+
+    let lineHeight = 44;
+    let fontSize = 26;
+
+    if (useDualColumn) {
+      // 双栏古籍版式：左右对开
+      const half = Math.ceil(lineCount / 2);
+      lineHeight = Math.min(46, Math.max(25, Math.floor(availableHeight / (half + 0.5))));
+      fontSize = Math.min(24, Math.max(16, Math.floor(lineHeight * 0.58)));
+
+      // 垂直居中微调
+      const totalColHeight = half * lineHeight;
+      if (availableHeight > totalColHeight) {
+        currentY += Math.floor((availableHeight - totalColHeight) / 3);
+      }
+
+      ctx.fillStyle = "#1B1A18";
+      ctx.font = `500 ${fontSize}px "Noto Serif SC", "Songti SC", serif`;
+      ctx.letterSpacing = fontSize > 20 ? "3.5px" : "2px";
+
+      const col1Lines = lines.slice(0, half);
+      const col2Lines = lines.slice(half);
+
+      const col1X = width / 2 - 165;
+      const col2X = width / 2 + 165;
+
+      // 绘制左栏
+      let y1 = currentY;
+      for (let i = 0; i < col1Lines.length; i++) {
+        const text = col1Lines[i];
+        if (text.startsWith("【其")) {
+          ctx.fillStyle = "#B83B2E";
+          ctx.font = `bold ${fontSize - 2}px "KaiTi SC", "KaiTi", serif`;
+          ctx.fillText(text, col1X, y1);
+          ctx.fillStyle = "#1B1A18";
+          ctx.font = `500 ${fontSize}px "Noto Serif SC", "Songti SC", serif`;
+        } else {
+          ctx.fillText(text, col1X, y1);
+        }
+        y1 += lineHeight;
+      }
+
+      // 绘制右栏
+      let y2 = currentY;
+      for (let i = 0; i < col2Lines.length; i++) {
+        const text = col2Lines[i];
+        if (text.startsWith("【其")) {
+          ctx.fillStyle = "#B83B2E";
+          ctx.font = `bold ${fontSize - 2}px "KaiTi SC", "KaiTi", serif`;
+          ctx.fillText(text, col2X, y2);
+          ctx.fillStyle = "#1B1A18";
+          ctx.font = `500 ${fontSize}px "Noto Serif SC", "Songti SC", serif`;
+        } else {
+          ctx.fillText(text, col2X, y2);
+        }
+        y2 += lineHeight;
+      }
+
+      // 绘制双栏中间雅致古典分芯线 (木刻版心小缝)
+      ctx.strokeStyle = "#E2D8C6";
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.moveTo(width / 2, currentY - 6);
+      ctx.lineTo(width / 2, Math.max(y1, y2) - lineHeight + 8);
+      ctx.stroke();
+
+      currentY = Math.max(y1, y2);
+    } else {
+      // 单栏模式：根据行数自适应计算行高与字号
+      lineHeight = Math.min(52, Math.max(26, Math.floor(availableHeight / (lineCount + 0.5))));
+      fontSize = Math.min(28, Math.max(17, Math.floor(lineHeight * 0.58)));
+
+      // 垂直居中微调
+      const totalColHeight = lineCount * lineHeight;
+      if (availableHeight > totalColHeight) {
+        currentY += Math.floor((availableHeight - totalColHeight) / 3);
+      }
+
+      ctx.fillStyle = "#1B1A18";
+      ctx.font = `500 ${fontSize}px "Noto Serif SC", "Songti SC", serif`;
+      ctx.letterSpacing = fontSize > 22 ? "4px" : "2.5px";
+
+      for (let i = 0; i < lines.length; i++) {
+        const text = lines[i];
+        if (text.startsWith("【其")) {
+          ctx.fillStyle = "#B83B2E";
+          ctx.font = `bold ${fontSize - 1}px "KaiTi SC", "KaiTi", serif`;
+          ctx.fillText(text, width / 2, currentY);
+          ctx.fillStyle = "#1B1A18";
+          ctx.font = `500 ${fontSize}px "Noto Serif SC", "Songti SC", serif`;
+        } else {
+          ctx.fillText(text, width / 2, currentY);
+        }
         currentY += lineHeight;
       }
     }
 
-    // 7. 落款与朱砂印章
-    const sealSize = 64;
-    const colophonY = Math.min(currentY + 20, height - m - 80);
-    
-    // 题字："周庸 题"
+    // 7. 落款与白文朱砂印章 (位置精算法，紧随正文末行，永不重叠)
+    const colophonY = Math.min(currentY + 12, height - m - sealSize - 26);
+    const sealX = width / 2 + (useDualColumn ? 140 : 130);
+
     ctx.fillStyle = "#4A453C";
-    ctx.font = 'bold 22px "KaiTi SC", "STKaiti", "KaiTi", serif';
+    ctx.font = 'bold 20px "KaiTi SC", "STKaiti", "KaiTi", serif';
     ctx.textAlign = "right";
-    const sealX = width / 2 + 130;
-    ctx.fillText("周庸 题", sealX - 12, colophonY + sealSize / 2 + 6);
+    ctx.fillText("周庸 题", sealX - 10, colophonY + sealSize / 2 + 5);
 
     // 绘制白文朱砂名章
     if (window.SealGenerator) {
@@ -197,10 +312,10 @@ const CardExporter = (function () {
 
     // 8. 底部防伪题注
     ctx.fillStyle = "#9C9384";
-    ctx.font = '14px "Noto Serif SC", "Songti SC", sans-serif';
+    ctx.font = '13.5px "Noto Serif SC", "Songti SC", sans-serif';
     ctx.textAlign = "center";
     ctx.letterSpacing = "1.5px";
-    ctx.fillText("《一个人的诗经》（作者：周庸）· 亲友门生雅玩珍藏", width / 2, height - m - 20);
+    ctx.fillText("《一个人的诗经》（作者：周庸）· 亲友门生雅玩珍藏", width / 2, height - m - 16);
 
     // 导出 DataURL
     const dataUrl = canvas.toDataURL("image/png");
@@ -233,6 +348,7 @@ const CardExporter = (function () {
    * Canvas 多行自动折行计算
    */
   function wrapText(ctx, text, maxWidth) {
+    if (!text) return [];
     const chars = text.split("");
     const lines = [];
     let current = "";

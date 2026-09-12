@@ -20,8 +20,8 @@
   <link rel="icon" type="image/svg+xml" href="assets/icons/icon-192.svg">
 
   <!-- 样式表 (添加版本戳击穿强缓存) -->
-  <link rel="stylesheet" href="css/main.css?v=1.8.0">
-  <link rel="stylesheet" href="css/book.css?v=1.8.0">
+  <link rel="stylesheet" href="css/main.css?v=1.8.1">
+  <link rel="stylesheet" href="css/book.css?v=1.8.1">
 </head>
 <body class="font-standard">
 
@@ -70,11 +70,6 @@
           <button id="btnHeaderChronicle" class="btn-icon" title="查看诗集全帙志与两编卷帙概览" aria-label="全集志">
             📜
           </button>
-
-          <!-- 移动端打开目录按钮 -->
-          <button id="btnToggleToc" class="btn-icon mobile-only" title="打开卷目目录" aria-label="目录">
-            📑
-          </button>
         </div>
       </div>
     </header>
@@ -108,6 +103,9 @@
         <!-- 阅读器快捷操作栏 -->
         <div class="reader-controls-bar">
           <div class="nav-buttons">
+            <button id="btnToggleToc" class="btn-nav-page btn-nav-toc" title="打开卷帙目录">
+              <span>📑</span> <span>目录</span>
+            </button>
             <button id="btnPrevPoem" class="btn-nav-page" title="快捷键：键盘左箭头 [←]">
               <span>❮</span> <span>上一首</span>
             </button>
@@ -147,22 +145,6 @@
         💡 提示：在手机浏览器中点击底部“分享/菜单”选择“添加到主屏幕”，即可离线随手翻阅。
       </p>
     </footer>
-
-    <!-- 移动端适老化底部快捷工具条 -->
-    <nav class="mobile-senior-bar">
-      <button class="senior-btn" onclick="document.getElementById('btnToggleToc').click()">
-        <span>📑</span><span>目录</span>
-      </button>
-      <button class="senior-btn" onclick="document.getElementById('btnTTS').click()">
-        <span>🎙️</span><span>听诗</span>
-      </button>
-      <button class="senior-btn" onclick="document.getElementById('btnShareCard').click()">
-        <span>🧧</span><span>诗卡</span>
-      </button>
-      <button class="senior-btn" onclick="document.getElementById('btnToggleLayout').click()">
-        <span>📜</span><span>横竖</span>
-      </button>
-    </nav>
   </div>
 
   <!-- 朋友圈/LINE 雅韵诗卡导出弹窗 -->
@@ -296,9 +278,9 @@
   </script>
 
   <!-- 脚本引入 (附带版本戳击穿强缓存，按依赖严格排序) -->
-  <script src="js/seal.js?v=1.8.0"></script>
-  <script src="js/search.js?v=1.8.0"></script>
-  <script src="js/card-exporter.js?v=1.8.0"></script>
-  <script src="js/app.js?v=1.8.0"></script>
+  <script src="js/seal.js?v=1.8.1"></script>
+  <script src="js/search.js?v=1.8.1"></script>
+  <script src="js/card-exporter.js?v=1.8.1"></script>
+  <script src="js/app.js?v=1.8.1"></script>
 </body>
 </html>

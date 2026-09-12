@@ -7,7 +7,7 @@
 
 (function () {
   // 全集版本与编校日期（全站单一真实来源）
-  const APP_VERSION = "v1.8.0";
+  const APP_VERSION = "v1.8.1";
   const EDITION_DATE = "2026-09-12";
 
   // 全局应用状态
@@ -612,6 +612,13 @@
       }
       if (e.key === "ArrowLeft") navigateToPoem(state.currentPoemIndex - 1);
       if (e.key === "ArrowRight") navigateToPoem(state.currentPoemIndex + 1);
+      if ((e.key === "m" || e.key === "M") && !e.target.closest("input")) {
+        if (el.sidebarToc && el.sidebarToc.classList.contains("open")) {
+          closeSidebar();
+        } else {
+          openSidebar();
+        }
+      }
     });
 
     // 监听 Hash 变化（支持浏览器后退/前进与外部深度链接即时切换）
