@@ -314,12 +314,12 @@
     const inVolTotal = volPoems.length || 1;
     const globalNum = String(state.currentPoemIndex + 1).padStart(4, "0");
 
-    // 更新翻页按钮状态与纯净卷内进度 (绝不眩晕)
+    // 更新翻页按钮状态与全集总诗作进度 (如 15 / 1363)
     if (el.btnPrevPoem) el.btnPrevPoem.disabled = state.currentPoemIndex === 0;
     if (el.btnNextPoem) el.btnNextPoem.disabled = state.currentPoemIndex === state.poems.length - 1;
     if (el.pageIndicator) {
-      el.pageIndicator.textContent = `${inVolNum} / ${inVolTotal}`;
-      el.pageIndicator.title = `本卷第 ${inVolNum} 首 / 共 ${inVolTotal} 首（全集第 ${state.currentPoemIndex + 1} 首）`;
+      el.pageIndicator.textContent = `${state.currentPoemIndex + 1} / ${state.poems.length}`;
+      el.pageIndicator.title = `全集第 ${state.currentPoemIndex + 1} 首 / 共 ${state.poems.length} 首（本卷第 ${inVolNum} / ${inVolTotal} 首）`;
     }
 
     // 更新侧边栏高亮与所属卷展开状态
