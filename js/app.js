@@ -7,8 +7,8 @@
 
 (function () {
   // 全集版本与编校日期（全站单一真实来源）
-  const APP_VERSION = "v1.8.2";
-  const EDITION_DATE = "2026-09-12";
+  const APP_VERSION = "v1.8.5";
+  const EDITION_DATE = "2026-09-13";
 
   // 全局应用状态
   const state = {
@@ -836,9 +836,17 @@
         </ul>
       </div>
 
-      <div class="chronicle-colophon-box" style="margin-top: 22px; padding: 12px 16px; border-top: 1px dashed var(--border-color); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px;">
-        <span style="font-size: 13px; color: var(--text-muted);">全集版本 ${APP_VERSION} · ${EDITION_DATE} 编校 · 共 ${state.poems.length} 首亲笔真迹</span>
-        <div style="display: flex; align-items: center; gap: 10px;">
+      <div class="chronicle-colophon-box" style="margin-top: 22px; padding: 14px 16px; border-top: 1px dashed var(--border-color); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px;">
+        <div class="chronicle-colophon-meta" style="font-size: 13px; color: var(--text-muted); line-height: 1.8;">
+          <div><strong>全集版本</strong>：${APP_VERSION}（${EDITION_DATE} 编校录入 · 汇录 ${state.poems.length} 篇亲笔真迹）</div>
+          <div style="margin-top: 4px;">
+            <span><strong>技术开发与维护信箱</strong>：<a href="mailto:zhouyongshiji@gmail.com" style="color: var(--vermilion); text-decoration: none; font-weight: 500;">zhouyongshiji@gmail.com</a></span>
+          </div>
+          <div style="font-size: 12px; color: var(--text-muted); opacity: 0.85; margin-top: 2px;">
+            （亲友若有数字化系统建设及各类商业软件/网页开发需求，欢迎邮件联络）
+          </div>
+        </div>
+        <div class="chronicle-colophon-author" style="display: flex; align-items: center; gap: 10px;">
           <span style="font-family: var(--font-kaiti); font-size: 16px; color: var(--text-secondary);">周庸 敬题</span>
           <div>${sealSvg}</div>
         </div>
@@ -887,7 +895,12 @@ ${volSections}
 文字粗粝，皆是有感而发的心迹留痕；
 天涯羁旅，唯以诗心慰平生。
 
-（版本 ${APP_VERSION} · ${EDITION_DATE} 编校录入）`;
+━━━━━━━━━━━━━━━
+📌 数字化典藏与技术服务
+━━━━━━━━━━━━━━━
+▪ 全集版本：${APP_VERSION} · ${EDITION_DATE} 编校录入
+▪ 技术开发与维护信箱：zhouyongshiji@gmail.com
+（亲友若有数字化系统建设及各类商业软件/网页开发需求，欢迎邮件联络）`;
 
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(() => {
