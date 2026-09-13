@@ -20,8 +20,8 @@
   <link rel="icon" type="image/svg+xml" href="assets/icons/icon-192.svg">
 
   <!-- 样式表 (添加版本戳击穿强缓存) -->
-  <link rel="stylesheet" href="css/main.css?v=1.8.5">
-  <link rel="stylesheet" href="css/book.css?v=1.8.5">
+  <link rel="stylesheet" href="css/main.css?v=1.8.6">
+  <link rel="stylesheet" href="css/book.css?v=1.8.6">
 </head>
 <body class="font-standard">
 
@@ -187,12 +187,8 @@
   <!-- 诗集全帙志与五卷编年概览弹窗 -->
   <div id="chronicleModal" class="modal-backdrop">
     <div class="modal-card-dialog modal-chronicle-dialog">
-      <div class="modal-header">
-        <div class="modal-title">
-          <span>📜</span> <span>《一个人的诗经》全帙志（两编全览）</span>
-        </div>
-        <button id="btnCloseChronicleModal" class="modal-close-btn" aria-label="关闭">✕</button>
-      </div>
+      <!-- 右上角优雅浮动关闭按钮 (彻底移除顶部重复多余的网页标题) -->
+      <button id="btnCloseChronicleModal" class="modal-close-btn chronicle-floating-close-btn" aria-label="关闭">✕</button>
 
       <div class="modal-body chronicle-modal-body" id="chronicleContentArea">
         <!-- 由 app.js 动态渲染 -->
@@ -281,9 +277,9 @@
   </script>
 
   <!-- 脚本引入 (附带版本戳击穿强缓存，按依赖严格排序) -->
-  <script src="js/seal.js?v=1.8.5"></script>
-  <script src="js/search.js?v=1.8.5"></script>
-  <script src="js/card-exporter.js?v=1.8.5"></script>
-  <script src="js/app.js?v=1.8.5"></script>
+  <script src="js/seal.js?v=1.8.6"></script>
+  <script src="js/search.js?v=1.8.6"></script>
+  <script src="js/card-exporter.js?v=1.8.6"></script>
+  <script src="js/app.js?v=1.8.6"></script>
 </body>
 </html>

@@ -673,6 +673,37 @@ body.font-xlarge .mode-vertical .poem-page-content {
     min-height: 480px;
     height: 500px;
   }
+
+  /* 编年纲要弹窗移动端精致排版 (杜绝标题断句不齐与臃肿) */
+  .chronicle-modal-body {
+    padding: 24px 16px 16px 16px;
+  }
+
+  .chronicle-header-box {
+    padding-top: 20px;
+    padding-bottom: 14px;
+    margin-bottom: 16px;
+  }
+
+  .chronicle-title {
+    font-size: 20px;
+    flex-direction: column;
+    gap: 4px;
+    line-height: 1.35;
+    letter-spacing: 2px;
+  }
+
+  .chronicle-title .title-doc {
+    font-size: 15px;
+    font-weight: normal;
+    color: var(--text-secondary);
+    letter-spacing: 3px;
+  }
+
+  .chronicle-stats {
+    font-size: 12px;
+    line-height: 1.6;
+  }
 }
 
 /* ==========================================================================
@@ -721,6 +752,33 @@ body.font-xlarge .mode-vertical .poem-page-content {
   max-height: 90vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+
+.chronicle-floating-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 10;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.chronicle-floating-close-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--gold-accent);
 }
 
 .chronicle-modal-body {
@@ -737,14 +795,20 @@ body.font-xlarge .mode-vertical .poem-page-content {
   border-bottom: 2px double var(--border-color);
   padding-bottom: 18px;
   margin-bottom: 22px;
+  padding-top: 10px;
 }
 
 .chronicle-title {
   font-size: 24px;
   font-weight: 700;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   color: var(--text-primary);
   margin-bottom: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .chronicle-stats {

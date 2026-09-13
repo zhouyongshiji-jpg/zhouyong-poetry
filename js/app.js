@@ -7,7 +7,7 @@
 
 (function () {
   // 全集版本与编校日期（全站单一真实来源）
-  const APP_VERSION = "v1.8.5";
+  const APP_VERSION = "v1.8.6";
   const EDITION_DATE = "2026-09-13";
 
   // 全局应用状态
@@ -813,7 +813,9 @@
 
     el.chronicleContentArea.innerHTML = `
       <div class="chronicle-header-box">
-        <h3 class="chronicle-title">《一个人的诗经》全帙编年纲要</h3>
+        <h3 class="chronicle-title">
+          <span class="title-book">《一个人的诗经》</span><span class="title-doc">全帙编年纲要</span>
+        </h3>
         <div class="chronicle-stats">
           <span>周庸 先生 著</span> · 
           <span>100% 纯真迹 ${state.volumes.length} 大卷</span> · 
