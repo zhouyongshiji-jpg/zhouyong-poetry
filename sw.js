@@ -3,7 +3,7 @@
  * 确保海内外读者及老先生在断网/离线环境下依然可极速加载全部诗卷
  */
 
-const CACHE_NAME = "zhouyong-poetry-v1.8.6";
+const CACHE_NAME = "zhouyong-poetry-v1.8.7";
 const ASSETS_TO_CACHE = [
   "./",
   "./manifest.json",
@@ -126,10 +126,11 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // 3. 静态前端资源请求处理 (CSS, JS, SVG, 图标等) -> 缓存优先
+  // 3. 静态前端资源请求处理 (CSS, JS, SVG, 图标等) -> 缓存优先 (若带版本参数则击穿更新)
   event.respondWith(
     (async () => {
-      const cachedResponse = await caches.match(event.request, { ignoreSearch: true });
+      const matchOptions = url.search ? {} : { ignoreSearch: true };
+      const cachedResponse = await caches.match(event.request, matchOptions);
       if (cachedResponse) {
         return cachedResponse;
       }
