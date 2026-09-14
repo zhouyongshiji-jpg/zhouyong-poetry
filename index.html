@@ -234,34 +234,58 @@
         <button id="btnCloseInstallAppModal" class="modal-close-btn" onclick="window.closeInstallModal &amp;&amp; window.closeInstallModal()" aria-label="关闭">✕</button>
       </div>
 
-      <div class="modal-body" style="padding: 24px 22px 16px; font-family: var(--font-kaiti, serif);">
-        <p style="font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 20px; text-align: left;">
-          为方便随时以大字品读周庸诗作，推荐将《一个人的诗经》典藏安装至设备桌面：
+      <div class="modal-body" style="padding: 22px 20px 14px; font-family: var(--font-kaiti, serif);">
+        <p style="font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: 16px; text-align: left;">
+          为方便周庸先生及亲友随时以大字品读诗作，推荐将《一个人的诗经》典藏安装至设备桌面：
         </p>
 
-        <div style="display: flex; flex-direction: column; gap: 14px;">
-          <!-- 通道 1：手机桌面安装 (PWA 原生) -->
-          <button id="btnModalInstallMobile" class="pwa-install-action-btn" onclick="window.triggerPromptFromGesture &amp;&amp; window.triggerPromptFromGesture()" style="margin-bottom:0;">
-            <span>📱</span> <span>添加到手机桌面（官方应用）</span>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <!-- 板块 1：苹果手机（iPhone / iPad） -->
+          <div class="pwa-platform-card" id="cardApple">
+            <div class="pwa-platform-header">
+              <span>🍎</span>
+              <span>苹果手机（iPhone / iPad）</span>
+              <span class="pwa-badge-req">仅限 Safari</span>
+            </div>
+            <div class="pwa-apple-steps">
+              <div class="pwa-step-line">① 确认是在苹果自带 <strong>Safari 浏览器</strong> 中打开；</div>
+              <div class="pwa-step-line">② 点击底栏中间【<strong>分享 ⎋</strong>】图标（方框带向上箭头）；</div>
+              <div class="pwa-step-line">③ 向上轻滑菜单，选择【<strong>添加到主屏幕 ➕</strong>】并点击右上角【添加】。</div>
+            </div>
+          </div>
+
+          <!-- 板块 2：安卓手机（Android） -->
+          <div class="pwa-platform-card" id="cardAndroid">
+            <div class="pwa-platform-header">
+              <span>🤖</span>
+              <span>安卓手机（Android）</span>
+              <span class="pwa-badge-req" style="color: var(--vermilion); background: var(--vermilion-light);">推荐 Chrome / APK</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
+              <button id="btnModalInstallAndroid" class="pwa-install-action-btn" onclick="window.triggerPromptFromGesture && window.triggerPromptFromGesture()" style="margin-bottom:0; padding: 11px 16px; font-size: 15px;">
+                <span>🤖</span> <span>添加到手机桌面（推荐使用 Chrome）</span>
+              </button>
+              <a id="btnModalDownloadApk" href="ZhouYongPoetry.apk" class="pwa-apk-sub-btn" download="周庸诗集.apk" style="display: flex; align-items: center; justify-content: center; text-decoration: none; padding: 9px 16px; font-size: 14px; font-weight: bold; margin: 0; box-sizing: border-box;">
+                <span>📦</span> <span>直接下载安卓安装包 (.apk 极速直装)</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- 板块 3：电脑桌面端 -->
+          <div class="pwa-platform-card" id="cardPC">
+            <div class="pwa-platform-header">
+              <span>🖥️</span>
+              <span>电脑桌面端（Windows / Mac）</span>
+            </div>
+            <button id="btnModalInstallPC" class="pwa-install-action-btn pwa-install-pc-btn" onclick="window.triggerPromptFromGesture && window.triggerPromptFromGesture()" style="margin-top: 4px; margin-bottom: 0; padding: 11px 16px; font-size: 15px;">
+              <span>🖥️</span> <span>安装到电脑桌面（Edge / Chrome 独立大屏）</span>
+            </button>
+          </div>
+
+          <!-- 分享链接快捷复制 -->
+          <button id="btnCopyInstallLink" class="btn-action-pill" style="width: 100%; border-radius: 20px; background: rgba(197, 160, 89, 0.12); color: var(--text-primary); border: 1px dashed var(--gold-accent); padding: 10px 14px; font-size: 13.5px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box; transition: var(--transition-smooth);">
+            <span>📋</span> <span>复制安装网址发给微信 / LINE 亲友</span>
           </button>
-
-          <!-- 通道 2：安卓 APK 安装包直载 (原生超链接，点击即下，零依赖) -->
-          <a id="btnModalDownloadApk" href="ZhouYongPoetry.apk" class="pwa-apk-sub-btn" download="周庸诗集.apk" style="display: flex; align-items: center; justify-content: center; text-decoration: none; padding: 13px 18px; font-size: 15px; font-weight: bold; margin: 0; box-sizing: border-box;">
-            <span>📦</span> <span>直接下载安卓安装包 (.apk)</span>
-          </a>
-
-          <!-- 通道 3：电脑桌面安装 (PWA 原生 / 独立大屏应用) -->
-          <button id="btnModalInstallPC" class="pwa-install-action-btn pwa-install-pc-btn" onclick="window.triggerPromptFromGesture &amp;&amp; window.triggerPromptFromGesture()" style="margin-bottom: 0;">
-            <span>🖥️</span> <span>安装到电脑桌面（独立大屏窗口）</span>
-          </button>
-        </div>
-
-        <!-- 浏览器快捷指引 -->
-        <div class="pwa-help-steps" style="margin-top: 18px; font-size: 13px; line-height: 1.8; text-align: left; background: var(--bg-secondary); border-radius: 8px; padding: 12px 14px;">
-          <div style="font-weight: bold; color: var(--vermilion); margin-bottom: 4px;">各端备用简易指引：</div>
-          <div>• <strong>安卓手机</strong>：推荐优先点击上方【直接下载安卓安装包】，安全快捷；</div>
-          <div>• <strong>苹果手机</strong>：点击 Safari 底部【分享 ⎋】图标，向上滑选择【添加到主屏幕】；</div>
-          <div>• <strong>电脑端</strong>：点击 Edge / Chrome 浏览器地址栏最右侧的【安装应用 ⊞】小图标。</div>
         </div>
       </div>
 
@@ -288,6 +312,15 @@
       if (drawer) drawer.classList.remove("open");
       var backdrop = document.getElementById("sidebarBackdrop");
       if (backdrop) backdrop.classList.remove("show");
+
+      // 设备自动高亮
+      var ua = navigator.userAgent.toLowerCase();
+      var isIOS = /iphone|ipad|ipod/.test(ua);
+      var isAndroid = /android/.test(ua);
+      var cardApple = document.getElementById("cardApple");
+      var cardAndroid = document.getElementById("cardAndroid");
+      if (isIOS && cardApple) cardApple.classList.add("highlight");
+      if (isAndroid && cardAndroid) cardAndroid.classList.add("highlight");
     };
     window.closeInstallModal = function() {
       var m = document.getElementById("installAppModal");
@@ -296,9 +329,9 @@
   </script>
 
   <!-- 脚本引入 (附带版本戳击穿强缓存，按依赖严格排序) -->
-  <script src="js/seal.js?v=1.8.7"></script>
-  <script src="js/search.js?v=1.8.7"></script>
-  <script src="js/card-exporter.js?v=1.8.7"></script>
-  <script src="js/app.js?v=1.8.7"></script>
+  <script src="js/seal.js?v=1.8.8"></script>
+  <script src="js/search.js?v=1.8.8"></script>
+  <script src="js/card-exporter.js?v=1.8.8"></script>
+  <script src="js/app.js?v=1.8.8"></script>
 </body>
 </html>

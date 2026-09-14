@@ -3,9 +3,10 @@
  * 确保海内外读者及老先生在断网/离线环境下依然可极速加载全部诗卷
  */
 
-const CACHE_NAME = "zhouyong-poetry-v1.8.7";
+const CACHE_NAME = "zhouyong-poetry-v1.8.8";
 const ASSETS_TO_CACHE = [
   "./",
+  "./install.html",
   "./manifest.json",
   "./css/main.css",
   "./css/book.css",

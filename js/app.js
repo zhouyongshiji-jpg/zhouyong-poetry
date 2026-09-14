@@ -7,8 +7,8 @@
 
 (function () {
   // 全集版本与编校日期（全站单一真实来源）
-  const APP_VERSION = "v1.8.7";
-  const EDITION_DATE = "2026-09-13";
+  const APP_VERSION = "v1.8.8";
+  const EDITION_DATE = "2026-09-14";
 
   // 全局应用状态
   const state = {
@@ -737,13 +737,41 @@
         }
       };
     }
-    const btnModalInstallMobile = document.getElementById("btnModalInstallMobile");
-    if (btnModalInstallMobile) {
-      btnModalInstallMobile.onclick = () => triggerPromptFromGesture();
+    const btnModalInstallAndroid = document.getElementById("btnModalInstallAndroid") || document.getElementById("btnModalInstallMobile");
+    if (btnModalInstallAndroid) {
+      btnModalInstallAndroid.onclick = () => triggerPromptFromGesture();
     }
     const btnModalInstallPC = document.getElementById("btnModalInstallPC");
     if (btnModalInstallPC) {
       btnModalInstallPC.onclick = () => triggerPromptFromGesture();
+    }
+    const btnCopyInstallLink = document.getElementById("btnCopyInstallLink");
+    if (btnCopyInstallLink) {
+      btnCopyInstallLink.onclick = () => {
+        const textToCopy = `周庸老先生诗词集《一个人的诗经》手机桌面安装网址：\nhttps://zhouyong-poetry.zhouyongshiji.workers.dev/install.html\n（苹果手机点开后用 Safari 添加到桌面；安卓手机推荐用 Chrome 打开或直接下载安装包）`;
+        const doCopy = () => {
+          const oldHtml = btnCopyInstallLink.innerHTML;
+          btnCopyInstallLink.innerHTML = "<span>✅</span> <span>已成功复制！可直接发微信或 LINE 亲友</span>";
+          btnCopyInstallLink.style.background = "rgba(5, 150, 105, 0.15)";
+          btnCopyInstallLink.style.borderColor = "#059669";
+          btnCopyInstallLink.style.color = "#059669";
+          setTimeout(() => {
+            btnCopyInstallLink.innerHTML = oldHtml;
+            btnCopyInstallLink.style.background = "";
+            btnCopyInstallLink.style.borderColor = "";
+            btnCopyInstallLink.style.color = "";
+          }, 3000);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(textToCopy).then(doCopy).catch(() => {
+            fallbackCopy(textToCopy);
+            doCopy();
+          });
+        } else {
+          fallbackCopy(textToCopy);
+          doCopy();
+        }
+      };
     }
 
     // 水墨长诗平滑回顶浮标
@@ -875,9 +903,13 @@
 
 您的全部诗作已为您精心整理完毕，全集共计 ${totalCount} 首您的亲笔真迹，无任何杂作。现已汇编为【纯真迹 ${volCount} 大卷】，按编年与题材系统归档，特呈您一览：
 
-🌐 诗集正式访问网址：
+🌐 诗集在线品读网址：
 https://zhouyong-poetry.zhouyongshiji.workers.dev
-（电脑与手机直接点击即可秒开；若微信提示受限，点右上角“…”选择“在浏览器中打开”）
+（电脑与手机直接点击秒开；微信内若提示，点右上角“…”选“在浏览器打开”）
+
+📲 手机一键安装到桌面指引（微信 / LINE 好友）：
+https://zhouyong-poetry.zhouyongshiji.workers.dev/install.html
+（苹果手机点开用 Safari 添加到桌面；安卓手机推荐用 Chrome 打开或下载 APK）
 
 ━━━━━━━━━━━━━━━
 📜 《一个人的诗经》（周庸 著）${volCount}大卷编年概览
@@ -1068,24 +1100,26 @@ ${volSections}
     } else if (isIOS) {
       contentHtml = `
         <div class="pwa-help-steps">
-          <div>① 点击 Safari 浏览器底部的【<strong>分享 ⎋</strong>】图标；</div>
-          <div>② 在弹出面板向上滑动，找到并选择【<strong>添加到主屏幕</strong>】；</div>
-          <div>③ 点击右上角【<strong>添加</strong>】，即可在手机桌面随时品读！</div>
+          <div style="font-weight:bold; color:var(--vermilion); margin-bottom:6px;">🍎 苹果手机 Safari 专属指引：</div>
+          <div>① 确认当前是在苹果自带 <strong>Safari 浏览器</strong> 中打开；</div>
+          <div>② 点击屏幕底部的【<strong>分享 ⎋</strong>】图标（方框带向上箭头）；</div>
+          <div>③ 在弹出菜单向上轻滑，选择【<strong>添加到主屏幕 ➕</strong>】；</div>
+          <div>④ 点击右上角【<strong>添加</strong>】，手机桌面即可生成专属图标！</div>
         </div>
       `;
     } else {
       contentHtml = `
         <button id="btnModalTriggerInstall" class="pwa-install-action-btn">
-          <span>📱</span> <span>立即安装到手机桌面</span>
+          <span>🤖</span> <span>立即添加到手机桌面（推荐 Chrome）</span>
         </button>
         <a href="ZhouYongPoetry.apk" class="pwa-apk-sub-btn" download="周庸诗集.apk">
-          <span>📦</span> <span>直接下载安卓安装包 (.apk)</span>
+          <span>📦</span> <span>直接下载安卓安装包 (.apk 极速直装)</span>
         </a>
         <div id="pwaInstallFallbackTip" class="pwa-help-steps" style="display:none; margin-top:8px;">
-          <div style="font-size:13px; color:var(--text-muted); margin-bottom:6px;">若系统未弹出确认框，可点击浏览器菜单添加：</div>
-          <div>① 点击浏览器右上角或底部的菜单【<strong>···</strong>】；</div>
+          <div style="font-size:13px; color:var(--text-muted); margin-bottom:6px;">若系统未弹出确认框，建议使用 Chrome 浏览器：</div>
+          <div>① 点击 Chrome 浏览器右上角菜单【<strong>···</strong>】；</div>
           <div>② 选择【<strong>添加到主屏幕</strong>】或【<strong>安装应用</strong>】；</div>
-          <div style="font-size:12.5px; color:var(--text-muted); margin-top:4px;">（注：若浏览器菜单呈灰色不可点，推荐直接点击上方按钮下载 APK 安装包）</div>
+          <div style="font-size:12.5px; color:var(--text-muted); margin-top:4px;">（注：若浏览器不支持，推荐直接点击上方按钮下载纯净 APK 安装包）</div>
         </div>
       `;
     }

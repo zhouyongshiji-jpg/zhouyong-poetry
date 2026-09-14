@@ -1175,3 +1175,61 @@ body.font-xlarge .poem-nav-genre {
   font-family: var(--font-kaiti);
 }
 
+.pwa-platform-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+.pwa-platform-card.highlight {
+  border-color: var(--vermilion);
+  background: rgba(184, 59, 46, 0.04);
+}
+
+.pwa-platform-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--text-primary);
+  font-family: var(--font-kaiti);
+  margin-bottom: 8px;
+}
+
+.pwa-badge-req {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: normal;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+.pwa-apple-steps {
+  background: var(--bg-card);
+  border: 1px dashed rgba(197, 160, 89, 0.5);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--text-primary);
+}
+
+.pwa-apple-steps strong {
+  color: var(--vermilion);
+}
+
+.pwa-step-line {
+  margin-bottom: 3px;
+}
+
+.pwa-step-line:last-child {
+  margin-bottom: 0;
+}
+
+
