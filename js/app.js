@@ -7,7 +7,7 @@
 
 (function () {
   // 全集版本与编校日期（全站单一真实来源）
-  const APP_VERSION = "v1.8.8";
+  const APP_VERSION = "v1.8.9";
   const EDITION_DATE = "2026-09-14";
 
   // 全局应用状态
@@ -748,7 +748,7 @@
     const btnCopyInstallLink = document.getElementById("btnCopyInstallLink");
     if (btnCopyInstallLink) {
       btnCopyInstallLink.onclick = () => {
-        const textToCopy = `周庸老先生诗词集《一个人的诗经》手机桌面安装网址：\nhttps://zhouyong-poetry.zhouyongshiji.workers.dev/install.html\n（苹果手机点开后用 Safari 添加到桌面；安卓手机推荐用 Chrome 打开或直接下载安装包）`;
+        const textToCopy = `《一个人的诗经》（作者：周庸）\n📖 诗集主页：https://zhouyong-poetry.zhouyongshiji.workers.dev\n📲 手机桌面安装：https://zhouyong-poetry.zhouyongshiji.workers.dev/install.html\n（苹果手机在 Safari 中打开选择“添加到主屏幕”；安卓手机推荐用 Chrome 打开或下载安装包）`;
         const doCopy = () => {
           const oldHtml = btnCopyInstallLink.innerHTML;
           btnCopyInstallLink.innerHTML = "<span>✅</span> <span>已成功复制！可直接发微信或 LINE 亲友</span>";

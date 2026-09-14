@@ -636,10 +636,20 @@
       </div>
     </div>
 
-    <!-- 在线永久直达网址备用（纯文本形式，确保即使在最简阅读器中也可点击识别） -->
-    <div style="margin-top: 20px; font-size: 12.5px; color: var(--text-sub); text-align: center; border-top: 1px dashed rgba(217, 210, 195, 0.6); padding-top: 12px;">
-      <span>诗集在线访问网址：</span><br>
-      <a href="https://zhouyong-poetry.zhouyongshiji.workers.dev" style="color: var(--vermilion); text-decoration: none; font-weight: 500; word-break: break-all;">https://zhouyong-poetry.zhouyongshiji.workers.dev</a>
+    <!-- 诗集主页直达与一键复制 -->
+    <div class="homepage-bar-card" style="margin-top: 22px; padding: 16px 18px; background: #FFF; border: 1.5px solid var(--border-color); border-radius: 14px; text-align: center; box-shadow: 0 4px 14px rgba(0,0,0,0.04);">
+      <div style="font-size: 14px; color: var(--text-sub); margin-bottom: 8px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px;">
+        <span>🌐 诗集主页在线网址</span>
+      </div>
+      <div id="homeUrlBox" style="font-size: 14px; font-family: monospace, sans-serif; font-weight: bold; color: var(--vermilion); word-break: break-all; margin-bottom: 12px; padding: 8px 12px; background: #FAF7F0; border-radius: 8px; border: 1px dashed rgba(184, 59, 46, 0.35); user-select: all;">https://zhouyong-poetry.zhouyongshiji.workers.dev</div>
+      <div style="display: flex; gap: 10px; justify-content: center;">
+        <button id="btnCopyHomeUrl" type="button" style="flex: 1; padding: 11px 12px; font-size: 14px; font-family: var(--font-family); font-weight: bold; background: #FAF7F0; color: #2C2825; border: 1.5px solid var(--border-color); border-radius: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s ease;">
+          <span>📋</span> <span id="copyHomeText">点击复制主页网址</span>
+        </button>
+        <a href="https://zhouyong-poetry.zhouyongshiji.workers.dev" style="flex: 1; padding: 11px 12px; font-size: 14px; font-family: var(--font-family); font-weight: bold; background: var(--vermilion); color: #FFF; border-radius: 22px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 3px 10px rgba(184, 59, 46, 0.3);">
+          <span>📖</span> <span>直接进入阅读</span>
+        </a>
+      </div>
     </div>
   </div>
 
@@ -884,6 +894,58 @@
         window.location.href = LIVE_URL + "?install=pc";
       }
     };
+
+    // 5. 点击复制主页网址
+    function copyText(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text);
+      }
+      return new Promise((resolve, reject) => {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        textArea.setAttribute("readonly", "");
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        textArea.setSelectionRange(0, 99999);
+        try {
+          const successful = document.execCommand("copy");
+          document.body.removeChild(textArea);
+          if (successful) resolve();
+          else reject(new Error("execCommand failed"));
+        } catch (err) {
+          document.body.removeChild(textArea);
+          reject(err);
+        }
+      });
+    }
+
+    const btnCopyHomeUrl = document.getElementById("btnCopyHomeUrl");
+    if (btnCopyHomeUrl) {
+      btnCopyHomeUrl.onclick = async () => {
+        const homeUrl = "https://zhouyong-poetry.zhouyongshiji.workers.dev";
+        try {
+          await copyText(homeUrl);
+          const copyHomeText = document.getElementById("copyHomeText");
+          copyHomeText.textContent = "已成功复制！";
+          btnCopyHomeUrl.style.borderColor = "#2E7D32";
+          btnCopyHomeUrl.style.background = "#E8F5E9";
+          btnCopyHomeUrl.style.color = "#2E7D32";
+          showToast("已成功复制主页网址！可直接粘贴发给微信或LINE亲友");
+          setTimeout(() => {
+            copyHomeText.textContent = "点击复制主页网址";
+            btnCopyHomeUrl.style.borderColor = "";
+            btnCopyHomeUrl.style.background = "";
+            btnCopyHomeUrl.style.color = "";
+          }, 3000);
+        } catch (err) {
+          showToast("请长按框中网址进行复制");
+        }
+      };
+    }
   </script>
 </body>
 </html>
