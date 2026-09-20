@@ -7,8 +7,8 @@
 
 (function () {
   // 全集版本与编校日期（全站单一真实来源）
-  const APP_VERSION = "v1.8.9";
-  const EDITION_DATE = "2026-09-14";
+  const APP_VERSION = "v1.9.0";
+  const EDITION_DATE = "2026-09-20";
 
   // 全局应用状态
   const state = {
