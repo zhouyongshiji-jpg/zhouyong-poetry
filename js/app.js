@@ -748,7 +748,7 @@
     const btnCopyInstallLink = document.getElementById("btnCopyInstallLink");
     if (btnCopyInstallLink) {
       btnCopyInstallLink.onclick = () => {
-        const textToCopy = `《一个人的诗经》（作者：周庸）\n📖 诗集主页：https://zhouyong-poetry.zhouyongshiji.workers.dev\n📲 手机桌面安装：https://zhouyong-poetry.zhouyongshiji.workers.dev/install.html\n（苹果手机在 Safari 中打开选择“添加到主屏幕”；安卓手机推荐用 Chrome 打开或下载安装包）`;
+        const textToCopy = `《一个人的诗经》（作者：周庸）\n📖 诗集主页（国内直连·畅通免翻）：https://zhouyongshiji-jpg.github.io/zhouyong-poetry/\n📲 手机桌面安装：https://zhouyongshiji-jpg.github.io/zhouyong-poetry/install.html\n（苹果手机在 Safari 中打开选择“添加到主屏幕”；安卓手机推荐用 Chrome 打开或下载安装包）\n🌐 海外备用通道：https://zhouyong-poetry.zhouyongshiji.workers.dev`;
         const doCopy = () => {
           const oldHtml = btnCopyInstallLink.innerHTML;
           btnCopyInstallLink.innerHTML = "<span>✅</span> <span>已成功复制！可直接发微信或 LINE 亲友</span>";
@@ -903,12 +903,13 @@
 
 您的全部诗作已为您精心整理完毕，全集共计 ${totalCount} 首您的亲笔真迹，无任何杂作。现已汇编为【纯真迹 ${volCount} 大卷】，按编年与题材系统归档，特呈您一览：
 
-🌐 诗集在线品读网址：
-https://zhouyong-poetry.zhouyongshiji.workers.dev
+🌐 诗集在线品读网址（国内直连畅通）：
+https://zhouyongshiji-jpg.github.io/zhouyong-poetry/
 （电脑与手机直接点击秒开；微信内若提示，点右上角“…”选“在浏览器打开”）
+（海外备用通道：https://zhouyong-poetry.zhouyongshiji.workers.dev）
 
 📲 手机一键安装到桌面指引（微信 / LINE 好友）：
-https://zhouyong-poetry.zhouyongshiji.workers.dev/install.html
+https://zhouyongshiji-jpg.github.io/zhouyong-poetry/install.html
 （苹果手机点开用 Safari 添加到桌面；安卓手机推荐用 Chrome 打开或下载 APK）
 
 ━━━━━━━━━━━━━━━

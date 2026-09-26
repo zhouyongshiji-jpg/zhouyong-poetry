@@ -583,7 +583,7 @@
       <div style="font-size: 13px; color: #5C4316; line-height: 1.6;">
         苹果手机受系统限制，无法直接在聊天软件接收的文件中添加到桌面。<br>
         请直接点击下方在线正式网址打开：<br>
-        <a href="https://zhouyong-poetry.zhouyongshiji.workers.dev/install.html" style="font-weight: bold; color: #0066CC; text-decoration: underline; word-break: break-all; display: inline-block; margin-top: 4px;">https://zhouyong-poetry.zhouyongshiji.workers.dev/install.html</a>
+        <a id="localNoticeLink" href="https://zhouyongshiji-jpg.github.io/zhouyong-poetry/install.html" style="font-weight: bold; color: #0066CC; text-decoration: underline; word-break: break-all; display: inline-block; margin-top: 4px;">https://zhouyongshiji-jpg.github.io/zhouyong-poetry/install.html</a>
       </div>
     </div>
 
@@ -614,7 +614,7 @@
         </button>
 
         <!-- 安卓 APK 极速直装通道 -->
-        <a id="btnDownloadApk" href="https://zhouyong-poetry.zhouyongshiji.workers.dev/ZhouYongPoetry.apk" class="btn-apk-pill" download="周庸诗集.apk">
+        <a id="btnDownloadApk" href="ZhouYongPoetry.apk" class="btn-apk-pill" download="周庸诗集.apk">
           <span class="apk-badge-ico">📦</span>
           <div class="apk-badge-text">
             <span class="apk-badge-title">直接下载安卓安装包 (.apk)</span>
@@ -637,18 +637,25 @@
     </div>
 
     <!-- 诗集主页直达与一键复制 -->
-    <div class="homepage-bar-card" style="margin-top: 22px; padding: 16px 18px; background: #FFF; border: 1.5px solid var(--border-color); border-radius: 14px; text-align: center; box-shadow: 0 4px 14px rgba(0,0,0,0.04);">
-      <div style="font-size: 14px; color: var(--text-sub); margin-bottom: 8px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 6px;">
+    <div class="homepage-bar-card" style="margin-top: 22px; padding: 18px 18px 16px; background: #FFF; border: 1.5px solid var(--border-color); border-radius: 14px; text-align: center; box-shadow: 0 4px 14px rgba(0,0,0,0.04);">
+      <div style="font-size: 14px; color: var(--text-main); margin-bottom: 8px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 6px;">
         <span>🌐 诗集主页在线网址</span>
+        <span style="font-size: 11px; background: #E8F5E9; color: #2E7D32; border: 1px solid #A5D6A7; padding: 1px 7px; border-radius: 10px;">国内直连·畅通免翻</span>
       </div>
-      <div id="homeUrlBox" style="font-size: 14px; font-family: monospace, sans-serif; font-weight: bold; color: var(--vermilion); word-break: break-all; margin-bottom: 12px; padding: 8px 12px; background: #FAF7F0; border-radius: 8px; border: 1px dashed rgba(184, 59, 46, 0.35); user-select: all;">https://zhouyong-poetry.zhouyongshiji.workers.dev</div>
-      <div style="display: flex; gap: 10px; justify-content: center;">
+      <div id="homeUrlBox" style="font-size: 13.5px; font-family: monospace, sans-serif; font-weight: bold; color: var(--vermilion); word-break: break-all; margin-bottom: 12px; padding: 8px 12px; background: #FAF7F0; border-radius: 8px; border: 1px dashed rgba(184, 59, 46, 0.35); user-select: all;">https://zhouyongshiji-jpg.github.io/zhouyong-poetry/</div>
+      
+      <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 10px;">
         <button id="btnCopyHomeUrl" type="button" style="flex: 1; padding: 11px 12px; font-size: 14px; font-family: var(--font-family); font-weight: bold; background: #FAF7F0; color: #2C2825; border: 1.5px solid var(--border-color); border-radius: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s ease;">
           <span>📋</span> <span id="copyHomeText">点击复制主页网址</span>
         </button>
-        <a href="https://zhouyong-poetry.zhouyongshiji.workers.dev" style="flex: 1; padding: 11px 12px; font-size: 14px; font-family: var(--font-family); font-weight: bold; background: var(--vermilion); color: #FFF; border-radius: 22px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 3px 10px rgba(184, 59, 46, 0.3);">
+        <a id="btnEnterHome" href="./" style="flex: 1; padding: 11px 12px; font-size: 14px; font-family: var(--font-family); font-weight: bold; background: var(--vermilion); color: #FFF; border-radius: 22px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 3px 10px rgba(184, 59, 46, 0.3);">
           <span>📖</span> <span>直接进入阅读</span>
         </a>
+      </div>
+
+      <div style="font-size: 11.5px; color: var(--text-sub); display: flex; align-items: center; justify-content: center; gap: 12px; border-top: 1px dashed rgba(217, 210, 195, 0.7); padding-top: 8px; margin-top: 6px;">
+        <span>🇨🇳 国内推荐：GitHub Pages</span>
+        <span>🌏 海外备用：Cloudflare</span>
       </div>
     </div>
   </div>
@@ -691,7 +698,7 @@
             </div>
           </div>
         </div>
-        <a id="btnGoLiveSafari" href="https://zhouyong-poetry.zhouyongshiji.workers.dev" class="btn-modal-action btn-modal-primary">
+        <a id="btnGoLiveSafari" href="./" class="btn-modal-action btn-modal-primary">
           <span>📖 前往诗卷主站（在 Safari 中实操）</span>
         </a>
       </div>
@@ -718,7 +725,7 @@
           <div class="method-badge">方式一 · 最省心推荐（零门槛）</div>
           <div class="method-title">📦 直接下载安卓独立安装包 (.apk)</div>
           <div class="method-desc">仅 1.8MB 纯净体积，无广告，免受任何国产浏览器拦截。下载完成后直接点击安装即可。</div>
-          <a href="https://zhouyong-poetry.zhouyongshiji.workers.dev/ZhouYongPoetry.apk" class="btn-modal-action btn-modal-primary" download="周庸诗集.apk" style="margin-top: 10px;">
+          <a href="ZhouYongPoetry.apk" class="btn-modal-action btn-modal-primary" download="周庸诗集.apk" style="margin-top: 10px;">
             <span>📥 立即下载安卓安装包 (1.8MB)</span>
           </a>
         </div>
@@ -728,7 +735,7 @@
           <div class="method-badge" style="background: #EAE6DC; color: #5A544A;">方式二 · 网页免安装添加</div>
           <div class="method-title">🌐 尽量使用 Chrome 浏览器打开</div>
           <div class="method-desc">在 Chrome 浏览器中打开本页，点击右上角【三个点 ···】，选择【添加到主屏幕】或【安装应用】。</div>
-          <a href="https://zhouyong-poetry.zhouyongshiji.workers.dev?install=1" class="btn-modal-action btn-modal-secondary" style="margin-top: 10px;">
+          <a href="./?install=1" class="btn-modal-action btn-modal-secondary" style="margin-top: 10px;">
             <span>🚀 前往诗卷主站（在 Chrome 中打开）</span>
           </a>
         </div>
@@ -756,7 +763,15 @@
   <div id="toastMsg" class="toast"></div>
 
   <script>
-    const LIVE_URL = "https://zhouyong-poetry.zhouyongshiji.workers.dev";
+    const DOMESTIC_URL = "https://zhouyongshiji-jpg.github.io/zhouyong-poetry/";
+    const OVERSEAS_URL = "https://zhouyong-poetry.zhouyongshiji.workers.dev";
+    let CURRENT_URL = DOMESTIC_URL;
+    if (window.location.protocol.startsWith("http")) {
+      let base = window.location.origin + window.location.pathname.replace(/\/install\.html.*$/, "");
+      if (!base.endsWith("/")) base += "/";
+      CURRENT_URL = base;
+    }
+
     const ua = navigator.userAgent.toLowerCase();
     const isWeChat = /micromessenger/.test(ua);
     const isIOS = /iphone|ipad|ipod/.test(ua);
@@ -891,7 +906,7 @@
           deferredPrompt = null;
         });
       } else {
-        window.location.href = LIVE_URL + "?install=pc";
+        window.location.href = (CURRENT_URL || "./") + "?install=pc";
       }
     };
 
@@ -926,7 +941,7 @@
     const btnCopyHomeUrl = document.getElementById("btnCopyHomeUrl");
     if (btnCopyHomeUrl) {
       btnCopyHomeUrl.onclick = async () => {
-        const homeUrl = "https://zhouyong-poetry.zhouyongshiji.workers.dev";
+        const homeUrl = CURRENT_URL || DOMESTIC_URL;
         try {
           await copyText(homeUrl);
           const copyHomeText = document.getElementById("copyHomeText");
@@ -934,7 +949,7 @@
           btnCopyHomeUrl.style.borderColor = "#2E7D32";
           btnCopyHomeUrl.style.background = "#E8F5E9";
           btnCopyHomeUrl.style.color = "#2E7D32";
-          showToast("已成功复制主页网址！可直接粘贴发给微信或LINE亲友");
+          showToast("已成功复制国内主页网址！可直接粘贴发给微信或LINE亲友");
           setTimeout(() => {
             copyHomeText.textContent = "点击复制主页网址";
             btnCopyHomeUrl.style.borderColor = "";
